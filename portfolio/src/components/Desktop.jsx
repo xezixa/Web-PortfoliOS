@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import DesktopIcon from './DesktopIcon';
+import './Desktop.css';
 
-function Desktop() {
+function Desktop({ currentWallpaper }) {
     const [selectedIcon, setSelectedIcon] = useState(null);
     
     const initialIcons = [
@@ -36,7 +37,11 @@ function Desktop() {
     };
         
     return (
-        <div className="desktop-environment" onClick={handleBackgroundClick}>
+        <div 
+            className="desktop-environment" 
+            onClick={handleBackgroundClick}
+            style={{ backgroundImage: `url(${currentWallpaper})` }}
+            >
             <div className="desktop-icons" onClick={handleBackgroundClick}>
                 {initialIcons.map((icon) => (
                     <DesktopIcon
