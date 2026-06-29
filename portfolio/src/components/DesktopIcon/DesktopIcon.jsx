@@ -1,4 +1,5 @@
 import React from 'react';
+import './DesktopIcon.css'
 
 function DesktopIcon({id, label, iconSrc, isSelected, onSelect}) {
     return (

@@ -1,27 +1,3 @@
-/* Desktop Container */
-.desktop-environment {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    box-sizing: border-box;
-    padding: 12px 0 0 2px;
-    
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-/* Icon Grid Layout */
-.desktop-icons {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: 2px;
-    width: 100%;
-    height: calc(100vh - 40px);
-    padding: 0;
-}
-/* Individual Shortcuts */
 .desktop-shortcut {
     display: flex;
     flex-direction: column;
@@ -48,26 +24,21 @@
     pointer-events: none;
 }
 
-/* Typography Labels */
 .shortcut-label {
     color: #ffffff;
     font-family: 'Pixelated Tahoma', sans-serif;
     font-size: 11px;
     pointer-events: none;
-
     text-align: center;
     line-height: 1.2;
     margin-top: 3px;
     padding: 1px 3px;
     box-sizing: border-box;
-
     width: max-content;
     max-width: 72px;
-
     white-space: normal;
     word-break: break-word;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
-
 }
 
 .desktop-shortcut.app-selected .shortcut-label {
@@ -76,7 +47,6 @@
     display: inline-block;
 }
 
-/* Icon Image Rules */
 .shortcut-icon-wrapper {
     position: relative;
     width: 48px;
@@ -88,7 +58,7 @@
 }
 
 /* Icon Selected Overlay */
-.desktop-shortcut.app-selected .shortcut-icon-wrapper::after {
+/* .desktop-shortcut.app-selected .shortcut-icon-wrapper::after {
     content: '';
     position: absolute;
     top: 0;
@@ -100,3 +70,4 @@
     opacity: 0.6;
     pointer-events: none;
 }
+ */

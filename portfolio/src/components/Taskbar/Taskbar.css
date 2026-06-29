@@ -1,0 +1,139 @@
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 40px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    user-select: none;
+    background: linear-gradient(
+            to bottom,
+            #245edb 0%,
+            #4b8df2 8%,
+            #245edb 18%,
+            #194cc1 60%,
+            #1d53cf 100%
+    );
+    border-top: 1px solid #143fa1;
+}
+
+.taskbar-start-button {
+    width: 155px;
+    height: 38px;
+    margin-left: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+
+    background: linear-gradient(
+            to bottom,
+            #3b9116 0%,
+            #52b023 12%,
+            #3d8f14 28%,
+            #235b08 75%,
+            #2b6d0b 100%
+    );
+    border: 1px solid #1c4a04;
+    border-radius: 0 18px 18px 0;
+    box-shadow:
+            inset 0 1px 1px rgba(255, 255, 255, 0.45),
+            1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.start-button-text {
+    color: #ffffff;
+    font-family: 'Pixelated Tahoma', sans-serif;
+    font-size: 21px;
+    font-weight: normal;
+    font-style: italic;
+    letter-spacing: -0.2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.taskbar-tasks-container {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.tray-expand-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #5ba3f8 0%, #1c6bdf 100%);
+    border: 1px solid #104fa8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+    padding: 0;
+    margin-right: -10px;  
+    z-index: 10;         
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); 
+}
+
+.tray-expand-circle svg {
+    width: 14px;
+    height: 14px;
+}
+
+
+.taskbar-system-tray {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 0 16px 0 20px; 
+    box-sizing: border-box;
+
+
+    background: linear-gradient(
+            to bottom,
+            #00a2ed 0%,
+            #52cbff 8%,
+            #29b4f4 18%,
+            #0089db 60%,
+            #0097ec 100%
+    );
+    border-left: 1px solid #006dae;
+    box-shadow: inset 1px 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.tray-social-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tray-social-icon {
+    color: #ffffff;
+    background-color: #000000;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+.tray-social-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.system-tray-clock {
+    color: #ffffff;
+    font-family: 'Pixelated Tahoma', sans-serif;
+    font-size: 11px;
+    white-space: nowrap;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}

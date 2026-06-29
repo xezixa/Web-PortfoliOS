@@ -1,0 +1,45 @@
+.app-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #ece9d8;
+    border: 3px solid #0054e3;
+    border-top: none;
+    border-radius: 7px 7px 0 0;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.window-header {
+    background: linear-gradient(to bottom, #0058e6 0%, #2488fc 4%, #0054e3 12%, #0054e3 88%, #002e99 100%);
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-family: 'Tahoma', sans-serif;
+    font-weight: bold;
+    cursor: move;
+}
+.window-title {
+    color: #ffffff;
+    font-size: 13px;
+    user-select: none;
+}
+.window-body {
+    background-color: #ffffff;
+    color: #000000;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
