@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Draggable from 'react-draggable';
 import './Window.css';
 
-function Window({ title, children, onClose, width = 600, height = 400, defaultX = 100, defaultY = 100 }) {
+function Window({ title, children, onClose, onFocus, zIndex, width = 600, height = 400, defaultX = 100, defaultY = 100 }) {
     const nodeRef = useRef(null);
     return (
         <Draggable
@@ -10,11 +10,18 @@ function Window({ title, children, onClose, width = 600, height = 400, defaultX 
             handle=".window-header"
             bounds="parent"
             defaultPosition={{ x: defaultX, y: defaultY }}
+            onMouseDown={onFocus}
             >
             <div
                 ref={nodeRef}
                 className="app-window"
-                style={{ width: `${width}px`, height: `${height}px` }}
+                style={{
+                    width: `${width}px`,
+                    height: `${height}px`, 
+                    zIndex: zIndex, 
+                    position: 'absolute'
+            }}
+                onMouseDown={onFocus}
                 >
                 <div className="window-header">
                     <span className="window-title">{title}</span>

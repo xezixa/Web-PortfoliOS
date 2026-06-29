@@ -1,49 +1,159 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DesktopIcon from '../DesktopIcon/DesktopIcon';
 import Window from '../Window/Window';
+import { initialIcons } from '../../data/desktopIcons';
 import './Desktop.css';
 
 function Desktop({ currentWallpaper, children }) {
-    const [selectedIcon, setSelectedIcon] = useState(null);
+    const [selectedIconIds, setSelectedIconIds] = useState([]);
     const [openWindows, setOpenWindows] = useState([]);
+    const [activeZIndex, setActiveZIndex] = useState(1);
 
-    const initialIcons = [
-        {
-            id: 'recycle-bin',
-            label: 'Recycle Bin',
-            iconSrc: '/ModernXP-75-Trash-icon.png'
+    const [selection, setSelection] = useState({
+        isSelecting: false,
+        startX: 0,
+        startY: 0,
+        currentX: 0,
+        currentY: 0
+    });
 
-        },
-        {
-            id: 'photography-app',
-            label: 'Photography',
-            iconSrc: '/camera-icon.png'
-        },
-        {
-            id: 'technology-app',
-            label: 'Technology',
-            iconSrc: '/Device-Manager-Icon.png'
-        },
-        {
-            id: 'pdfview-app',
-            label: 'PDFView.exe',
-            iconSrc: '/Notepad_WinXP.png'
-        }
-    ];
+    const desktopRef = useRef(null);
+    const iconsContainerRef = useRef(null);
+    const justFinishedSelecting = useRef(false);
 
     useEffect(() => {
-        const handleGlobalClick = () => {
-            setSelectedIcon(null);
+        const handleGlobalClick = (e) => {
+            if (justFinishedSelecting.current) {
+                justFinishedSelecting.current = false;
+                return;
+            }
+            const isClickingBackground = e.target === desktopRef.current || e.target.classList.contains('desktop-icons');
+            if (isClickingBackground) {
+                setSelectedIconIds([]);
+            }
         };
         window.addEventListener('click', handleGlobalClick);
         return () => {
             window.removeEventListener('click', handleGlobalClick);
         };
     }, []);
-    
+
+    const handleMouseDown = (e) => {
+        const isClickingBackground = e.target === desktopRef.current || e.target.classList.contains('desktop-icons');
+        if (!isClickingBackground) return;
+
+        e.preventDefault();
+
+        const rect = desktopRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        setSelection({
+            isSelecting: true,
+            startX: x,
+            startY: y,
+            currentX: x,
+            currentY: y
+        });
+
+        setSelectedIconIds([]);
+    };
+
+    const handleMouseMove = (e) => {
+        if(!selection.isSelecting) return;
+
+        const rect = desktopRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        setSelection(prev => ({
+            ...prev,
+            currentX: x,
+            currentY: y
+        }));
+
+        if (iconsContainerRef.current) {
+            const startX = selection.startX + rect.left;
+            const startY = selection.startY + rect.top;
+            const currentX = e.clientX;
+            const currentY = e.clientY;
+
+            const boxLeft = Math.min(startX, currentX);
+            const boxTop = Math.min(startY, currentY);
+            const boxRight = Math.max(startX, currentX);
+            const boxBottom = Math.max(startY, currentY);
+
+            const newlySelected = [];
+
+            const iconElements = iconsContainerRef.current.children;
+            for (let i = 0; i < iconElements.length; i++) {
+                const iconEl = iconElements[i];
+                const iconRect = iconEl.getBoundingClientRect();
+                const iconId = iconEl.getAttribute('data-id');
+
+                const isOverlapping = !(
+                    iconRect.right < boxLeft ||
+                    iconRect.left > boxRight ||
+                    iconRect.bottom < boxTop ||
+                    iconRect.top > boxBottom
+                );
+
+                if (isOverlapping && iconId) {
+                    newlySelected.push(iconId);
+                }
+            }
+            setSelectedIconIds(newlySelected);
+        }
+    };
+
+    const handleMouseUp = () => {
+        if(!selection.isSelecting) return;
+
+        const width = Math.abs(selection.startX - selection.currentX);
+        const height = Math.abs(selection.startY - selection.currentY);
+        if (width > 5 || height > 5) {
+            justFinishedSelecting.current = true;
+        }
+
+        setSelection(prev => ({ ...prev, isSelecting: false}));
+    };
+
+    const getSelectionStyle = () => {
+        const { startX, startY, currentX, currentY } = selection;
+
+        const left = Math.min(startX, currentX);
+        const top = Math.min(startY, currentY);
+        const width = Math.abs(startX - currentX);
+        const height = Math.abs(startY - currentY);
+
+        return {
+            left: `${left}px`,
+            top: `${top}px`,
+            width: `${width}px`,
+            height: `${height}px`,
+            display: selection.isSelecting ? 'block' : 'none'
+        };
+    };
+
+    const handleFocusWindow = (id) => {
+        const newZ = activeZIndex + 1;
+        setActiveZIndex(newZ);
+
+        setOpenWindows((prevWindows) =>
+            prevWindows.map((win) =>
+                win.id === id? { ...win, zIndex: newZ } : win
+            )
+        );
+    };
+
     const handleIconDoubleClick = (icon) => {
-        if (openWindows.some(win => win.id === icon.id)) return;
-        
+        if (openWindows.some(win => win.id === icon.id)) {
+            handleFocusWindow(icon.id);
+            return;
+        }
+        const newZ = activeZIndex + 1;
+        setActiveZIndex(newZ);
+
         setOpenWindows([
             ...openWindows,
             {
@@ -51,56 +161,55 @@ function Desktop({ currentWallpaper, children }) {
                 title: icon.title,
                 content: icon.content,
                 defaultX: 100 + (openWindows.length * 25),
-                defaultY: 100 + (openWindows.length * 25)
+                defaultY: 100 + (openWindows.length * 25),
+                zIndex: newZ
             }
         ]);
     };
-    
+
     const handleCloseWindow = (id) => {
         setOpenWindows(openWindows.filter(win => win.id !== id));
     };
 
     return (
         <div
+            ref={desktopRef}
             className="desktop-environment"
             style={{backgroundImage: `url(${currentWallpaper})`}}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
         >
-            <div className="desktop-icons">
+            <div className="desktop-selection-box" style={getSelectionStyle()} />
+
+            <div className="desktop-icons" ref={iconsContainerRef}>
                 {initialIcons.map((icon) => (
-                    <div
+                    <DesktopIcon
                         key={icon.id}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedIcon(icon.id);
-                        }}
-                        onDoubleClick={(e) => {
-                            e.stopPropagation();
-                            handleIconDoubleClick(icon);
-                        }}
-                    >
-                        <DesktopIcon
-                            id={icon.id}
-                            label={icon.label}
-                            iconSrc={icon.iconSrc}
-                            isSelected={selectedIcon === icon.id}
-                            onSelect={setSelectedIcon}
-                        />
-                    </div>
+                        id={icon.id}
+                        label={icon.label}
+                        iconSrc={icon.iconSrc}
+                        isSelected={selectedIconIds.includes(icon.id)}
+                        onSelect={(id) => setSelectedIconIds([id])}
+                        onOpen={() => handleIconDoubleClick(icon)}
+                    />
                 ))}
             </div>
-            
+
             {openWindows.map((win) => (
-            <Window
-                key={win.id}
-                title={win.title}
-                defaultX={win.defaultX}
-                defaultY={win.defaultY}
-                onClose={() => handleCloseWindow(win.id)}
+                <Window
+                    key={win.id}
+                    title={win.title}
+                    defaultX={win.defaultX}
+                    defaultY={win.defaultY}
+                    zIndex={win.zIndex + 10} 
+                    onClose={() => handleCloseWindow(win.id)}
+                    onFocus={() => handleFocusWindow(win.id)}
                 >
-                {win.content}
-            </Window>
+                    {win.content}
+                </Window>
             ))}
-            
+
             {children}
         </div>
     );

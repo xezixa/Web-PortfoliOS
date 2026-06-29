@@ -9,6 +9,7 @@
     cursor: default;
     user-select: none;
     box-sizing: border-box;
+    border: 1px solid transparent;
 }
 
 .desktop-shortcut.app-selected {
@@ -43,6 +44,7 @@
 
 .desktop-shortcut.app-selected .shortcut-label {
     background-color: #0b61e2;
+    color: #ffffff;
     text-shadow: none;
     display: inline-block;
 }
