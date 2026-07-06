@@ -13,6 +13,7 @@
 }
 
 .desktop-icons {
+    position: relative;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -28,6 +29,6 @@
     position: absolute;
     background-color: rgba(0, 102, 204, 0.25);
     border: 1px solid rgba(0, 102, 204, 0.6);
-    z-index: 1;
+    z-index: 10;
     pointer-events: none;
 }

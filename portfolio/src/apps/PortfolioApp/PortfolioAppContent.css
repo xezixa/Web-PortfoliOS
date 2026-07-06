@@ -1,0 +1,89 @@
+.portfolio-app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    color: #222222;
+    font-family: 'Georgia', serif;
+    box-sizing: border-box;
+}
+
+.portfolio-menu-bar {
+    display: flex;
+    gap: 16px;
+    background-color: #f0ede6;
+    border-bottom: 2px solid #d4d0c8;
+    padding: 4px 12px;
+    font-family: 'Pixelated Tahoma', sans-serif;
+    font-size: 13px;
+    user-select: none;
+}
+
+.menu-item {
+    cursor: default;
+    padding: 2px 6px;
+}
+
+.menu-item:hover {
+    background-color: #0066cc;
+    color: white;
+}
+
+.portfolio-workspace {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.portfolio-heading {
+    font-size: 42px;
+    font-weight: 300;
+    margin: 0 0 8px 0;
+}
+
+.portfolio-heading .bold-name {
+    font-weight: 700;
+}
+
+.portfolio-subheading {
+    font-size: 24px;
+    margin: 0 0 48px 0;
+    color: #333333;
+}
+
+.portfolio-navigation-grid {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.portfolio-panel-btn {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #e2e2e2;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
+    padding: 32px 16px;
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    color: #222222;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.portfolio-panel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.portfolio-panel-btn:active {
+    transform: translateY(0);
+    box-shadow: 0px 2px 4px 4gba(0, 0, 0, 0.04);
+    background-color: #fafafa;
+}

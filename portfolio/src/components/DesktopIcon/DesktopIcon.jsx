@@ -1,7 +1,7 @@
 import React from 'react';
 import './DesktopIcon.css';
 
-function DesktopIcon({ id, label, iconSrc, isSelected, onSelect, onOpen }) {
+function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, onDragStart }) {
 
     const handleClick = (e) => {
         e.stopPropagation();
@@ -12,13 +12,25 @@ function DesktopIcon({ id, label, iconSrc, isSelected, onSelect, onOpen }) {
         e.stopPropagation();
         if (onOpen) onOpen();
     };
-
+const handleMouseDown = (e) => {
+    e.stopPropagation();
+    if (onDragStart) {
+        onDragStart(id, e.clientX, e.clientY);
+    }
+}
+    
     return (
         <div
             className={`desktop-shortcut ${isSelected ? 'app-selected' : ''}`}
             data-id={id}
             onClick={handleClick}
             onDoubleClick={handleDoubleClick}
+            onMouseDown={handleMouseDown}
+            style={{
+                position: 'absolute',
+                left: `${x}px`,
+                top: `${y}px`
+            }}
         >
             <div className="shortcut-icon-wrapper">
                 <img

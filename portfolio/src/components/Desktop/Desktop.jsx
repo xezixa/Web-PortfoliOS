@@ -4,11 +4,36 @@ import Window from '../Window/Window';
 import { initialIcons } from '../../data/desktopIcons';
 import './Desktop.css';
 
-function Desktop({ currentWallpaper, children }) {
-    const [selectedIconIds, setSelectedIconIds] = useState([]);
-    const [openWindows, setOpenWindows] = useState([]);
-    const [activeZIndex, setActiveZIndex] = useState(1);
+function Desktop({
+                     currentWallpaper,
+                     minimizedWindows,
+                     openWindows,
+                     setOpenWindows,
+                     onMinimize,
+                     onRestore,
+                     onFocus,
+                     onOpenWindow,
+                     children
+                 }) {
 
+    const [icons, setIcons] = useState(() =>
+        initialIcons.map((icon, index) => {
+            if (icon.id === 'portfolio_app') {
+                return {
+                    ...icon,
+                    x: 10 + (8 * 84),
+                    y: 10 + (4 * 84)
+                };
+            }
+            return {
+                ...icon,
+                x: 10,
+                y: 10 + (index * 84)
+            };
+        })
+    );
+
+    const [selectedIconIds, setSelectedIconIds] = useState([]);
     const [selection, setSelection] = useState({
         isSelecting: false,
         startX: 0,
@@ -17,13 +42,14 @@ function Desktop({ currentWallpaper, children }) {
         currentY: 0
     });
 
+    const [draggedIcon, setDraggedIcon] = useState(null);
     const desktopRef = useRef(null);
     const iconsContainerRef = useRef(null);
     const justFinishedSelecting = useRef(false);
 
     useEffect(() => {
         const handleGlobalClick = (e) => {
-            if (justFinishedSelecting.current) {
+            if (justFinishedSelecting.current || draggedIcon) {
                 justFinishedSelecting.current = false;
                 return;
             }
@@ -36,9 +62,36 @@ function Desktop({ currentWallpaper, children }) {
         return () => {
             window.removeEventListener('click', handleGlobalClick);
         };
-    }, []);
+    }, [selectedIconIds, draggedIcon]);
+
+    const handleIconDragStart = (id, clientX, clientY) => {
+        let iconsToDrag = [...selectedIconIds];
+
+        if (!iconsToDrag.includes(id)) {
+            iconsToDrag = [id];
+            setSelectedIconIds([id]);
+        }
+
+        const rect = desktopRef.current.getBoundingClientRect();
+        const mouseX = clientX - rect.left;
+        const mouseY = clientY - rect.top;
+
+        const dragGroup = iconsToDrag.map(iconId => {
+            const targetIcon = icons.find(icon => icon.id === iconId);
+            return {
+                id: iconId,
+                offsetX: mouseX - (targetIcon ? targetIcon.x : 0),
+                offsetY: mouseY - (targetIcon ? targetIcon.y : 0)
+            };
+        });
+
+        setDraggedIcon(dragGroup);
+    };
 
     const handleMouseDown = (e) => {
+
+        if (draggedIcon) return;
+
         const isClickingBackground = e.target === desktopRef.current || e.target.classList.contains('desktop-icons');
         if (!isClickingBackground) return;
 
@@ -60,7 +113,28 @@ function Desktop({ currentWallpaper, children }) {
     };
 
     const handleMouseMove = (e) => {
-        if(!selection.isSelecting) return;
+        if (draggedIcon) {
+            const rect = desktopRef.current.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            setIcons(prevIcons =>
+                prevIcons.map(icon => {
+                    const dragData = draggedIcon.find(d => d.id === icon.id);
+                    if (dragData) {
+                        return {
+                            ...icon,
+                            x: x - dragData.offsetX,
+                            y: y - dragData.offsetY,
+                        };
+                    }
+                    return icon;
+                })
+            );
+            return;
+        }
+
+        if (!selection.isSelecting) return;
 
         const rect = desktopRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -107,7 +181,34 @@ function Desktop({ currentWallpaper, children }) {
     };
 
     const handleMouseUp = () => {
-        if(!selection.isSelecting) return;
+        if (draggedIcon) {
+            const GRID_SIZE_X = 84;
+            const GRID_SIZE_Y = 84;
+            const PADDING = 10;
+
+            setIcons(prevIcons =>
+                prevIcons.map(icon => {
+                    const wasDragged = draggedIcon.some(d => d.id === icon.id);
+                    if (wasDragged) {
+                        const snappedX = Math.round((icon.x - PADDING) / GRID_SIZE_X) * GRID_SIZE_X + PADDING;
+                        const snappedY = Math.round((icon.y - PADDING) / GRID_SIZE_Y) * GRID_SIZE_Y + PADDING;
+
+                        return {
+                            ...icon,
+                            x: Math.max(PADDING, snappedX),
+                            y: Math.max(PADDING, snappedY)
+                        };
+                    }
+                    return icon;
+                })
+            );
+            justFinishedSelecting.current = true;
+
+            setDraggedIcon(null);
+            return;
+        }
+
+        if (!selection.isSelecting) return;
 
         const width = Math.abs(selection.startX - selection.currentX);
         const height = Math.abs(selection.startY - selection.currentY);
@@ -115,11 +216,11 @@ function Desktop({ currentWallpaper, children }) {
             justFinishedSelecting.current = true;
         }
 
-        setSelection(prev => ({ ...prev, isSelecting: false}));
+        setSelection(prev => ({...prev, isSelecting: false}));
     };
 
     const getSelectionStyle = () => {
-        const { startX, startY, currentX, currentY } = selection;
+        const {startX, startY, currentX, currentY} = selection;
 
         const left = Math.min(startX, currentX);
         const top = Math.min(startY, currentY);
@@ -135,36 +236,9 @@ function Desktop({ currentWallpaper, children }) {
         };
     };
 
-    const handleFocusWindow = (id) => {
-        const newZ = activeZIndex + 1;
-        setActiveZIndex(newZ);
-
-        setOpenWindows((prevWindows) =>
-            prevWindows.map((win) =>
-                win.id === id? { ...win, zIndex: newZ } : win
-            )
-        );
-    };
-
+    // FIX: Removed the floating, leftover window-opening logic that was causing the syntax error
     const handleIconDoubleClick = (icon) => {
-        if (openWindows.some(win => win.id === icon.id)) {
-            handleFocusWindow(icon.id);
-            return;
-        }
-        const newZ = activeZIndex + 1;
-        setActiveZIndex(newZ);
-
-        setOpenWindows([
-            ...openWindows,
-            {
-                id: icon.id,
-                title: icon.title,
-                content: icon.content,
-                defaultX: 100 + (openWindows.length * 25),
-                defaultY: 100 + (openWindows.length * 25),
-                zIndex: newZ
-            }
-        ]);
+        onOpenWindow(icon);
     };
 
     const handleCloseWindow = (id) => {
@@ -183,32 +257,50 @@ function Desktop({ currentWallpaper, children }) {
             <div className="desktop-selection-box" style={getSelectionStyle()} />
 
             <div className="desktop-icons" ref={iconsContainerRef}>
-                {initialIcons.map((icon) => (
+                {icons.map((icon) => (
                     <DesktopIcon
                         key={icon.id}
                         id={icon.id}
                         label={icon.label}
                         iconSrc={icon.iconSrc}
+                        x={icon.x}
+                        y={icon.y}
                         isSelected={selectedIconIds.includes(icon.id)}
-                        onSelect={(id) => setSelectedIconIds([id])}
+                        onSelect={(id) => {
+                            if (!selectedIconIds.includes(id)) {
+                                setSelectedIconIds([id]);
+                            }
+                        }}
                         onOpen={() => handleIconDoubleClick(icon)}
+                        onDragStart={handleIconDragStart}
                     />
                 ))}
             </div>
 
-            {openWindows.map((win) => (
-                <Window
-                    key={win.id}
-                    title={win.title}
-                    defaultX={win.defaultX}
-                    defaultY={win.defaultY}
-                    zIndex={win.zIndex + 10} 
-                    onClose={() => handleCloseWindow(win.id)}
-                    onFocus={() => handleFocusWindow(win.id)}
-                >
-                    {win.content}
-                </Window>
-            ))}
+            {openWindows.map((win) => {
+                const isPortfolio = win.id === 'portfolio_app';
+                const winWidth = isPortfolio ? 900 : 600;
+                const winHeight = isPortfolio ? 500 : 400;
+
+                return (
+                    <Window
+                        key={win.id}
+                        window={win}
+                        title={win.title}
+                        iconSrc={icons.find(i => i.id === win.id)?.iconSrc}
+                        defaultX={win.defaultX}
+                        defaultY={win.defaultY}
+                        width={winWidth}
+                        height={winHeight}
+                        onClose={() => handleCloseWindow(win.id)}
+                        onFocus={() => onFocus(win.id)}
+                        onMinimize={() => onMinimize(win.id)}
+                        style={{ display: minimizedWindows.includes(win.id) ? 'none' : 'block' }}
+                    >
+                        {win.content}
+                    </Window>
+                );
+            })}
 
             {children}
         </div>

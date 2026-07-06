@@ -36,10 +36,12 @@
     padding: 1px 3px;
     box-sizing: border-box;
     width: max-content;
-    max-width: 72px;
-    white-space: normal;
-    word-break: break-word;
+    max-width: 120px;
+    white-space: nowrap;
+    word-break: keep-all;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .desktop-shortcut.app-selected .shortcut-label {

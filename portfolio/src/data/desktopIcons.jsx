@@ -1,4 +1,5 @@
 import React from 'react';
+import PortfolioAppContent from '../apps/PortfolioApp/PortfolioAppContent';
 
 export const initialIcons = [
     {
@@ -21,5 +22,11 @@ export const initialIcons = [
         id: 'pdfview-app',
         label: 'PDFView.exe',
         iconSrc: '/Notepad_WinXP.png'
+    },
+    {
+        id: 'portfolio_app',
+        label: 'portfolio_bezilla.exe',
+        iconSrc: '/portfolio-app-icon.png',
+        content: <PortfolioAppContent />
     }
 ];

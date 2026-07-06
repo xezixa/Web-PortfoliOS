@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Taskbar.css';
 
-function Taskbar() {
+function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWindowId }) {
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -17,20 +17,41 @@ function Taskbar() {
         const timerId = setInterval(updateClock, 60000);
         return () => clearInterval(timerId);
     }, []);
-    
-    const handleControlClick = (e) => {
-        e.stopPropagation();
-    };
 
     return (
         <div className="taskbar">
             <div className="taskbar-start-button" onClick={() => console.log('Start clicked')}>
                 <span className="start-button-text">start</span>
             </div>
-            
-            <div className="taskbar-tasks-container"></div>
 
-            
+            <div className="taskbar-tasks-container">
+                {openWindows.map((win) => {
+
+                    const isMinimized = minimizedWindows.includes(win.id);
+                    const isActive = win.id === focusedWindowId && !isMinimized;
+                    
+                    return (
+                        <button
+                            key={win.id}
+                            className={`taskbar-task-btn ${isActive ? 'active' : ''}`}
+                            onClick={() => {
+                                if (isMinimized) {
+                                    onRestore(win.id);
+                                }
+                                onFocus(win.id);
+                            }}
+                        >
+                            {win.iconSrc && (
+                                <img src={win.iconSrc} alt="" className="taskbar-task-icon"/>
+                            )}
+                            <span className="taskbar-task-title">{win.title}</span>
+                        </button>
+                    );
+                })}
+                
+            </div>
+
+
             <button className="tray-expand-circle" aria-label="Toggle Tray">
                 <svg viewBox="0 0 24 24" className="chevron-icon">
                     <path d="M15.41,16.59L10.83,12l4.58-4.59L14,6l-6,6l6,6L15.41,16.59z" fill="currentColor"/>
