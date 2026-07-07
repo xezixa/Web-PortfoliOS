@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import Desktop from './components/Desktop/Desktop';
 import Taskbar from './components/Taskbar/Taskbar';
+import StartMenu from './components/StartMenu/StartMenu';
+import './components/animations.css';
 import { initialIcons } from './data/desktopIcons';
 
 function App() {
     const [minimizedWindows, setMinimizedWindows] = useState([]);
     const [activeZIndex, setActiveZIndex] = useState(100);
     const [wallpaper, setWallpaper] = useState('/blissminimal.png');
-
+    const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [focusedWindowId, setFocusedWindowId] = useState('portfolio_app');
 
+    const [animatingWindows, setAnimatingWindows] = useState({});
+    
     const [openWindows, setOpenWindows] = useState(() => {
         const winWidth = 900;
         const winHeight = 500;
@@ -27,11 +31,75 @@ function App() {
         }];
     });
 
-    const handleMinimizeWindow = (id) => setMinimizedWindows((prev) => [...prev, id]);
+    const handleMinimizeWindow = (id) => {
+        
+        setAnimatingWindows(prev => ({...prev, [id]: 'minimizing'}));
+        
+        if (focusedWindowId === id) {
+            const visibleWindows = openWindows.filter(
+                (win) => win.id !== id && !minimizedWindows.includes(win.id)
+            );
+            if (visibleWindows.length > 0) {
+                const nextFocused = visibleWindows.reduce((prev, current) =>
+                    (prev.zIndex > current.zIndex) ? prev : current
+                );
+                handleFocusWindow(nextFocused.id);
+            } else {
+                setFocusedWindowId(null);
+            }
+        }
+        
+        setTimeout(() => {
+            setMinimizedWindows((prev) => {
+                if (!prev.includes(id)) return [...prev, id];
+                return prev;
+            });
+                
+            setAnimatingWindows(prev => {
+                const updated = { ...prev };
+                delete updated[id];
+                return updated;
+            });
+        }, 300);
+        
+    };
 
-    const handleRestoreWindow = (id) => {
+    const handleCloseWindow = (id) => {
+        const updatedWindows = openWindows.filter(win => win.id !== id);
+        setOpenWindows(updatedWindows);
+        
         setMinimizedWindows((prev) => prev.filter(wId => wId !== id));
-        handleFocusWindow(id); 
+        
+        if (focusedWindowId === id) {
+            const visibleWindows = updatedWindows.filter(
+                (win) => !minimizedWindows.includes(win.id)
+            );
+            
+            if (visibleWindows.length > 0) {
+                const nextFocused = visibleWindows.reduce((prev, current) =>
+                (prev.zIndex > current.zIndex) ? prev : current
+                );
+                handleFocusWindow(nextFocused.id);
+            } else {
+                setFocusedWindowId(null);
+            }
+        }
+    };
+    
+    const handleRestoreWindow = (id) => {
+
+        setMinimizedWindows((prev) => prev.filter(wId => wId !== id));
+        setAnimatingWindows(prev => ({ ...prev, [id]: 'restoring' }));
+        
+        handleFocusWindow(id);
+
+            setTimeout(() => {
+                setAnimatingWindows(prev => {
+                    const updated = {...prev};
+                    delete updated[id];
+                    return updated;
+                });
+        }, 300);
     };
 
     const handleFocusWindow = (id) => {
@@ -78,16 +146,25 @@ function App() {
     };
 
     return (
-        <div className="os-root" style={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+        <div className="os-root" style={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}
+        onClick={(e) => {
+            
+            if (e.target.className === 'os-root' && isStartMenuOpen) {
+                setIsStartMenuOpen(false);
+            }
+        }}
+        >
             <Desktop
                 currentWallpaper={wallpaper}
                 minimizedWindows={minimizedWindows}
                 openWindows={openWindows}
+                animatingWindows={animatingWindows}
                 setOpenWindows={setOpenWindows}
                 onMinimize={handleMinimizeWindow}
                 onRestore={handleRestoreWindow}
                 onFocus={handleFocusWindow}
-                onOpenWindow={handleOpenWindow} 
+                onOpenWindow={handleOpenWindow}
+                onCloseWindow={handleCloseWindow}
             />
             <Taskbar
                 minimizedWindows={minimizedWindows}
@@ -95,7 +172,15 @@ function App() {
                 openWindows={openWindows}
                 onFocus={handleFocusWindow}
                 focusedWindowId={focusedWindowId} 
+                onToggleStartMenu={() => {setIsStartMenuOpen(!isStartMenuOpen);
+                }}
             />
+            <div onClick={(e) => e.stopPropagation()}>
+                <StartMenu 
+                    isOpen={isStartMenuOpen} 
+                    onClose={() => setIsStartMenuOpen(false)}
+                />
+            </div>
         </div>
     );
 }
