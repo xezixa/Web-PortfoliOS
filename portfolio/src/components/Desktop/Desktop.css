@@ -10,6 +10,7 @@
     background-repeat: no-repeat;
     user-select: none;
     overflow: hidden;
+    z-index: 1;
 }
 
 .desktop-icons {

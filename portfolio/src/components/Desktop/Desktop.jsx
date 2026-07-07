@@ -7,12 +7,12 @@ import './Desktop.css';
 function Desktop({
                      currentWallpaper,
                      minimizedWindows,
-                     openWindows,
-                     setOpenWindows,
+                     openWindows, 
+                     animatingWindows,
                      onMinimize,
-                     onRestore,
                      onFocus,
                      onOpenWindow,
+                     onCloseWindow,
                      children
                  }) {
 
@@ -47,31 +47,8 @@ function Desktop({
     const iconsContainerRef = useRef(null);
     const justFinishedSelecting = useRef(false);
 
-    useEffect(() => {
-        const handleGlobalClick = (e) => {
-            if (justFinishedSelecting.current || draggedIcon) {
-                justFinishedSelecting.current = false;
-                return;
-            }
-            const isClickingBackground = e.target === desktopRef.current || e.target.classList.contains('desktop-icons');
-            if (isClickingBackground) {
-                setSelectedIconIds([]);
-            }
-        };
-        window.addEventListener('click', handleGlobalClick);
-        return () => {
-            window.removeEventListener('click', handleGlobalClick);
-        };
-    }, [selectedIconIds, draggedIcon]);
-
-    const handleIconDragStart = (id, clientX, clientY) => {
-        let iconsToDrag = [...selectedIconIds];
-
-        if (!iconsToDrag.includes(id)) {
-            iconsToDrag = [id];
-            setSelectedIconIds([id]);
-        }
-
+    const handleDragStart = (ids, clientX, clientY) => {
+        const iconsToDrag = Array.isArray(ids) ? ids : [ids];
         const rect = desktopRef.current.getBoundingClientRect();
         const mouseX = clientX - rect.left;
         const mouseY = clientY - rect.top;
@@ -84,9 +61,34 @@ function Desktop({
                 offsetY: mouseY - (targetIcon ? targetIcon.y : 0)
             };
         });
-
         setDraggedIcon(dragGroup);
     };
+
+    const draggedIconRef = useRef(draggedIcon);
+    useEffect(() => {
+        draggedIconRef.current = draggedIcon;
+    }, [draggedIcon]);
+
+    useEffect(() => {
+        const handleGlobalClick = (e) => {
+            if (e.target.closest('.desktop-icon')) return;
+
+            if (justFinishedSelecting.current) {
+                justFinishedSelecting.current = false;
+                return;
+            }
+
+            if (draggedIconRef.current) return;
+
+            setSelectedIconIds([]);
+        };
+
+        window.addEventListener('click', handleGlobalClick, true);
+
+        return () => {
+            window.removeEventListener('click', handleGlobalClick, true);
+        };
+    }, []);
 
     const handleMouseDown = (e) => {
 
@@ -113,7 +115,7 @@ function Desktop({
     };
 
     const handleMouseMove = (e) => {
-        if (draggedIcon) {
+        if (draggedIcon && draggedIcon.length > 0) {
             const rect = desktopRef.current.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -236,13 +238,8 @@ function Desktop({
         };
     };
 
-    // FIX: Removed the floating, leftover window-opening logic that was causing the syntax error
     const handleIconDoubleClick = (icon) => {
         onOpenWindow(icon);
-    };
-
-    const handleCloseWindow = (id) => {
-        setOpenWindows(openWindows.filter(win => win.id !== id));
     };
 
     return (
@@ -272,16 +269,25 @@ function Desktop({
                             }
                         }}
                         onOpen={() => handleIconDoubleClick(icon)}
-                        onDragStart={handleIconDragStart}
+                        onDragStart={(id, clientX, clientY) => {
+                            const iconsToDrag = selectedIconIds.includes(id) ? selectedIconIds : [id];
+                            handleDragStart(iconsToDrag, clientX, clientY);
+                        }}
                     />
                 ))}
             </div>
 
             {openWindows.map((win) => {
+                
+                if (!win || !win.id) return null;
+                
                 const isPortfolio = win.id === 'portfolio_app';
                 const winWidth = isPortfolio ? 900 : 600;
                 const winHeight = isPortfolio ? 500 : 400;
 
+                const isMinimized = minimizedWindows.includes(win.id);
+                const animationState = (animatingWindows && animatingWindows[win.id]) || '';
+                
                 return (
                     <Window
                         key={win.id}
@@ -292,10 +298,11 @@ function Desktop({
                         defaultY={win.defaultY}
                         width={winWidth}
                         height={winHeight}
-                        onClose={() => handleCloseWindow(win.id)}
-                        onFocus={() => onFocus(win.id)}
+                        onClose={() => onCloseWindow(win.id)}
+                        onFocus={() => onFocus(win.id)} 
                         onMinimize={() => onMinimize(win.id)}
-                        style={{ display: minimizedWindows.includes(win.id) ? 'none' : 'block' }}
+                        isMinimized={isMinimized}
+                        animationState={animationState}
                     >
                         {win.content}
                     </Window>

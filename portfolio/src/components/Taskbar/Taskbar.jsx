@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './Taskbar.css';
 
-function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWindowId }) {
+function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWindowId, onToggleStartMenu }) {
     const [time, setTime] = useState('');
+    const [hoveredWindowId, setHoveredWindowId] = useState(null);
+    
+    const hoverTimerRef = useRef(null);
 
     useEffect(() => {
         const updateClock = () => {
@@ -18,39 +21,79 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWin
         return () => clearInterval(timerId);
     }, []);
 
+    const handleMouseEnter = (id) => {
+        hoverTimerRef.current = setTimeout(() => {
+            setHoveredWindowId(id);
+        }, 600);
+    };
+    
+    const handleMouseLeave = () => {
+        if (hoverTimerRef.current) {
+            clearTimeout(hoverTimerRef.current);
+        }
+        setHoveredWindowId(null);
+    };
+    
     return (
         <div className="taskbar">
-            <div className="taskbar-start-button" onClick={() => console.log('Start clicked')}>
+            <div
+                className="taskbar-start-button"
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onToggleStartMenu();
+                }}
+                role="button"
+                tabIndex="0"
+            >
                 <span className="start-button-text">start</span>
             </div>
 
             <div className="taskbar-tasks-container">
                 {openWindows.map((win) => {
-
                     const isMinimized = minimizedWindows.includes(win.id);
                     const isActive = win.id === focusedWindowId && !isMinimized;
-                    
+
                     return (
-                        <button
+                        <div
                             key={win.id}
-                            className={`taskbar-task-btn ${isActive ? 'active' : ''}`}
-                            onClick={() => {
-                                if (isMinimized) {
-                                    onRestore(win.id);
-                                }
-                                onFocus(win.id);
-                            }}
+                            style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%'}}
+                            onMouseEnter={() => handleMouseEnter(win.id)}
+                            onMouseLeave={handleMouseLeave}
                         >
-                            {win.iconSrc && (
-                                <img src={win.iconSrc} alt="" className="taskbar-task-icon"/>
+                            <button
+                                className={`taskbar-task-btn ${isActive ? 'active' : ''}`}
+                                data-app={win.id}
+                                onClick={() => {
+                                    if (isMinimized) {
+                                        onRestore(win.id);
+                                    }
+                                    onFocus(win.id);
+                                }}
+                            >
+                                {win.iconSrc && (
+                                    <img src={win.iconSrc} alt="" className="taskbar-task-icon" />
+                                )}
+                                <span className="taskbar-task-title">{win.title}</span>
+                            </button>
+
+                            {hoveredWindowId === win.id && (
+                                <div className="window-preview-container">
+                                    <div className="window-preview-header">
+                                        {win.iconSrc && <img src={win.iconSrc} alt="" style={{ width: '12px', height: '12px', marginRight: '5px' }}/>}
+                                        <span>{win.title}</span>
+                                    </div>
+                                    <div className="window-preview-content-wrapper">
+                                    <div className="window-preview-content">
+                                        {win.content}
+                                    </div>
+                                    </div>
+                                </div>
                             )}
-                            <span className="taskbar-task-title">{win.title}</span>
-                        </button>
+                        </div>
                     );
                 })}
-                
             </div>
-
 
             <button className="tray-expand-circle" aria-label="Toggle Tray">
                 <svg viewBox="0 0 24 24" className="chevron-icon">

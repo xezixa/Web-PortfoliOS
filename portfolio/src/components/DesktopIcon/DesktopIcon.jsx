@@ -13,7 +13,6 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
         if (onOpen) onOpen();
     };
 const handleMouseDown = (e) => {
-    e.stopPropagation();
     if (onDragStart) {
         onDragStart(id, e.clientX, e.clientY);
     }
