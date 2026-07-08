@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 import './Window.css';
 
 function Window({
-                    window, title, iconSrc, children, onClose, onFocus,
+                    window, title, iconSrc, onOpenWindow, children, onClose, onFocus,
                     width = 600, height = 400, defaultX = 100, defaultY = 100,
                     onMinimize, isMinimized, animationState, style
                 }) {
@@ -77,10 +77,15 @@ function Window({
                                 onClose();
                             }} aria-label="Close"></button>
                         </div>
+                        
                     </div>
 
                     <div className="window-body">
-                        {children}
+                        {React.Children.map(children, child => 
+                            React.isValidElement(child) 
+                            ? React.cloneElement(child, { onOpenWindow }) 
+                            : child
+                        )}
                     </div>
                 </div>
             </div>

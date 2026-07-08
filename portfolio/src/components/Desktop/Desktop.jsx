@@ -3,6 +3,7 @@ import DesktopIcon from '../DesktopIcon/DesktopIcon';
 import Window from '../Window/Window';
 import { initialIcons } from '../../data/desktopIcons';
 import './Desktop.css';
+import PortfolioAppContent from "../../apps/PortfolioApp/PortfolioAppContent.jsx";
 
 function Desktop({
                      currentWallpaper,
@@ -306,8 +307,15 @@ function Desktop({
                         // Pass explicit states to Window.jsx
                         isMinimized={isMinimized}
                         animationState={animationState}
+                        
+                        onOpenWindow={onOpenWindow}
                     >
-                        {win.content}
+                        {win.id === 'portfolio_app' ? (
+                            <PortfolioAppContent onOpenWindow={onOpenWindow} />
+                        ) : (
+                            win.content
+                        )}
+                        
                     </Window>
                 );
             })}

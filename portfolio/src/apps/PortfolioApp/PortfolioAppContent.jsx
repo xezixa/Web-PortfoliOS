@@ -1,9 +1,20 @@
 import React from 'react';
 import './PortfolioAppContent.css';
+import ContactForm from './ContactForm';
 
-function PortfolioAppContent() {
+function PortfolioAppContent({ onOpenWindow }) {
     const handleAction = (destination) => {
-        console.log(`Navigating to ${destination}`);
+        if(destination === 'contact') {
+            
+            onOpenWindow({
+                id: 'contact_app',
+                title: 'Contact Me',
+                content: <ContactForm />,
+                defaultX: 200,
+                defaultY: 200,
+                zIndex: 999
+            });
+        }
     };
     
     return (

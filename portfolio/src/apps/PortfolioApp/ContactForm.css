@@ -1,0 +1,75 @@
+.contact-form-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #d4d0c8; /* Windows classic gray */
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    font-size: 11px;
+    padding: 10px;
+    gap: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Raised Button Style (for labels) */
+.win-btn-label {
+    background-color: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 2px 4px;
+    text-align: center;
+}
+
+/* Sunken Input Style */
+.win-input {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    background: white;
+    padding: 2px 4px;
+    outline: none;
+}
+
+.win-textarea-large {
+    width: 100%;
+    min-height: 200px;
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    background: white;
+    resize: none;
+}
+
+.contact-footer-panel {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: auto;
+}
+
+/* Classic Button Style */
+.win-btn {
+    background-color: #d4d0c8;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #404040;
+    padding: 3px 20px;
+    cursor: pointer;
+}
+
+.win-btn:active {
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
