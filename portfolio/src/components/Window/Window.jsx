@@ -15,7 +15,7 @@ function Window({
             ? 'restoring'
             : '';
 
-    // THE FIX: We rely strictly on the boolean prop passed from Desktop.jsx!
+    // Fully minimized state ensures the outer shell hides correctly AFTER animation
     const isFullyMinimized = isMinimized && !animationState;
 
     return (
@@ -28,7 +28,7 @@ function Window({
                 if (!isFullyMinimized) onFocus(window.id);
             }}
         >
-            {/* 1. OUTER WRAPPER: The 600x400 structural box */}
+            {/* 1. OUTER SHELL: React-Draggable uses this box. NEVER add CSS scaling here! */}
             <div
                 ref={nodeRef}
                 style={{
@@ -39,16 +39,15 @@ function Window({
                     height: `${height}px`,
                     zIndex: window.zIndex,
                     position: 'absolute',
-                    // Hides the shield and passes clicks to the desktop
+                    // Shuts off the invisible shield so you can click the desktop icons below
                     pointerEvents: isFullyMinimized ? 'none' : 'auto',
-                    // Keeps the window invisible AFTER the CSS animation finishes
                     opacity: isFullyMinimized ? 0 : 1
                 }}
                 onMouseDownCapture={() => {
                     if (!isFullyMinimized) onFocus(window.id);
                 }}
             >
-                {/* 2. INNER WRAPPER: The animated visual window */}
+                {/* 2. INNER SHELL: This performs the visual shrink/grow math */}
                 <div
                     className={`app-window ${animationClass}`}
                     data-app={window.id}

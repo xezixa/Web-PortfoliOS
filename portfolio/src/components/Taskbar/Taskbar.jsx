@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import './Taskbar.css';
 
-function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWindowId, onToggleStartMenu }) {
+function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize, focusedWindowId, onToggleStartMenu }) {
     const [time, setTime] = useState('');
     const [hoveredWindowId, setHoveredWindowId] = useState(null);
     
@@ -66,10 +66,13 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, focusedWin
                                 data-app={win.id}
                                 onClick={() => {
                                     if (isMinimized) {
-                                        onRestore(win.id);
-                                    }
+                                    onRestore(win.id);
+                                } else if (isActive) {
+                                    onMinimize(win.id);
+                                } else {
                                     onFocus(win.id);
-                                }}
+                                }
+                            }}
                             >
                                 {win.iconSrc && (
                                     <img src={win.iconSrc} alt="" className="taskbar-task-icon" />

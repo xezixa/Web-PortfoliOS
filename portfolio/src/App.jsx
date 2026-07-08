@@ -33,8 +33,26 @@ function App() {
 
     const handleMinimizeWindow = (id) => {
         
-        setAnimatingWindows(prev => ({...prev, [id]: 'minimizing'}));
+        setOpenWindows(prev => prev.map(win =>
+        win.id === id ? { ...win, zIndex: 9999 } : win
+        ));
         
+        const windowEl = document.querySelector(`.app-window[data-app="${id}"]`);
+        const taskbarBtn = document.querySelector(`.taskbar-task-btn[data-app="${id}"]`);
+
+        if (windowEl && taskbarBtn) {
+            const winRect = windowEl.getBoundingClientRect();
+            const btnRect = taskbarBtn.getBoundingClientRect();
+
+            const deltaX = (btnRect.left + btnRect.width / 2) - (winRect.left + winRect.width / 2);
+            const deltaY = (btnRect.top + btnRect.height / 2) - (winRect.top + winRect.height / 2);
+
+            windowEl.style.setProperty('--target-x', `${deltaX}px`);
+            windowEl.style.setProperty('--target-y', `${deltaY}px`);
+        }
+
+        setAnimatingWindows(prev => ({...prev, [id]: 'minimizing'}));
+
         if (focusedWindowId === id) {
             const visibleWindows = openWindows.filter(
                 (win) => win.id !== id && !minimizedWindows.includes(win.id)
@@ -48,20 +66,19 @@ function App() {
                 setFocusedWindowId(null);
             }
         }
-        
+
+        // 4. Complete minimization accurately matched to your 0.3s CSS
         setTimeout(() => {
             setMinimizedWindows((prev) => {
                 if (!prev.includes(id)) return [...prev, id];
                 return prev;
             });
-                
             setAnimatingWindows(prev => {
                 const updated = { ...prev };
                 delete updated[id];
                 return updated;
             });
         }, 300);
-        
     };
 
     const handleCloseWindow = (id) => {
@@ -85,20 +102,39 @@ function App() {
             }
         }
     };
-    
-    const handleRestoreWindow = (id) => {
 
-        setMinimizedWindows((prev) => prev.filter(wId => wId !== id));
-        setAnimatingWindows(prev => ({ ...prev, [id]: 'restoring' }));
+    const handleRestoreWindow = (id) => {
         
+        setOpenWindows(prev => prev.map(win =>
+        win.id === id ? { ...win, zIndex: 1000 } : win
+        ));
+        
+        const windowEl = document.querySelector(`.app-window[data-app="${id}"]`);
+        const taskbarBtn = document.querySelector(`.taskbar-task-btn[data-app="${id}"]`);
+
+        if (windowEl && taskbarBtn) {
+            const winRect = windowEl.getBoundingClientRect();
+            const btnRect = taskbarBtn.getBoundingClientRect();
+
+            const deltaX = (btnRect.left + btnRect.width / 2) - (winRect.left + winRect.width / 2);
+            const deltaY = (btnRect.top + btnRect.height / 2) - (winRect.top + winRect.height / 2);
+
+            windowEl.style.setProperty('--target-x', `${deltaX}px`);
+            windowEl.style.setProperty('--target-y', `${deltaY}px`);
+        }
+
+        // 2. Trigger restore state instantly
+        setMinimizedWindows(prev => prev.filter(wId => wId !== id));
+        setAnimatingWindows(prev => ({ ...prev, [id]: 'restoring' }));
         handleFocusWindow(id);
 
-            setTimeout(() => {
-                setAnimatingWindows(prev => {
-                    const updated = {...prev};
-                    delete updated[id];
-                    return updated;
-                });
+        // 3. Clear animation state
+        setTimeout(() => {
+            setAnimatingWindows(prev => {
+                const updated = { ...prev };
+                delete updated[id];
+                return updated;
+            });
         }, 300);
     };
 
@@ -169,6 +205,7 @@ function App() {
             <Taskbar
                 minimizedWindows={minimizedWindows}
                 onRestore={handleRestoreWindow}
+                onMinimize={handleMinimizeWindow}
                 openWindows={openWindows}
                 onFocus={handleFocusWindow}
                 focusedWindowId={focusedWindowId} 

@@ -278,16 +278,18 @@ function Desktop({
             </div>
 
             {openWindows.map((win) => {
-                
+                // 1. Safety Guard
                 if (!win || !win.id) return null;
-                
+
                 const isPortfolio = win.id === 'portfolio_app';
                 const winWidth = isPortfolio ? 900 : 600;
                 const winHeight = isPortfolio ? 500 : 400;
 
+                // 2. Safe State Evaluation
                 const isMinimized = minimizedWindows.includes(win.id);
-                const animationState = (animatingWindows && animatingWindows[win.id]) || '';
-                
+                // OPTIONAL CHAINING FIX: Prevents the "Cannot read properties of undefined" crash
+                const animationState = animatingWindows?.[win.id] || '';
+
                 return (
                     <Window
                         key={win.id}
@@ -299,8 +301,9 @@ function Desktop({
                         width={winWidth}
                         height={winHeight}
                         onClose={() => onCloseWindow(win.id)}
-                        onFocus={() => onFocus(win.id)} 
+                        onFocus={() => onFocus(win.id)}
                         onMinimize={() => onMinimize(win.id)}
+                        // Pass explicit states to Window.jsx
                         isMinimized={isMinimized}
                         animationState={animationState}
                     >
