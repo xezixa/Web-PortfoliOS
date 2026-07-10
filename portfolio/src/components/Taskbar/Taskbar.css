@@ -4,7 +4,7 @@
     left: 0;
     width: 100vw;
     height: 40px;
-    z-index: 9999;
+    z-index: 20000;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -12,18 +12,17 @@
     user-select: none;
     background: linear-gradient(
             to bottom,
-            #245edb 0%,
-            #4b8df2 8%,
-            #245edb 18%,
-            #194cc1 60%,
-            #1d53cf 100%
+            #4c84d8 0%,
+            #2c65c4 50%,
+            #1c55b4 100%
     );
-    border-top: 1px solid #143fa1;
+    border-top: 1px solid #78a2e5;
+    box-shadow: 0 -1px 2px rgba(0,0,0,0.2);
 }
 
 .taskbar-start-button {
     width: 155px;
-    height: 38px;
+    height: 37.5px;
     margin-left: 0;
     padding-left: 6px;
     padding-right: 16px;
@@ -35,17 +34,17 @@
 
     background: linear-gradient(
             to bottom,
-            #3b9116 0%,
-            #52b023 12%,
-            #3d8f14 28%,
-            #235b08 75%,
-            #2b6d0b 100%
+            #86c449 0%,
+            #6ab22c 50%,
+            #599d1e 51%,
+            #67ab2c 100%
     );
     border: 1px solid #1c4a04;
+    border-top: 1px solid #a3d773;
+    border-left: 1px solid #a3d773;
     border-radius: 0 18px 18px 0;
     box-shadow:
-            inset 0 1px 1px rgba(255, 255, 255, 0.45),
-            1px 1px 3px rgba(0, 0, 0, 0.3);
+            inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .start-button-text {
@@ -55,7 +54,7 @@
     font-weight: normal;
     font-style: italic;
     letter-spacing: -0.2px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .taskbar-tasks-container {

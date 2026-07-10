@@ -3,10 +3,23 @@ import Draggable from 'react-draggable';
 import './Window.css';
 
 function Window({
-                    window, title, iconSrc, onOpenWindow, children, onClose, onFocus,
+                    window, title, iconSrc, isActive, onOpenWindow, children, onClose, onFocus,
                     width = 600, height = 400, defaultX = 100, defaultY = 100,
-                    onMinimize, isMinimized, animationState, style
+                    onMinimize, isMinimized, animationState, style,
+                    // These props control visibility
+                    showMinimize = true,
+                    showMaximize = true,
+                    showHelp = false,
+                    onHelp
                 }) {
+    
+    const finalWidth = window.width || width;
+    const finalHeight = window.height || height;
+    
+    const showMin = showMinimize ?? true;
+    const showMax = showMaximize ?? true;
+    const showHlp = showHelp ?? false;
+    
     const nodeRef = useRef(null);
 
     const animationClass = animationState === 'minimizing'
@@ -15,7 +28,8 @@ function Window({
             ? 'restoring'
             : '';
 
-    // Fully minimized state ensures the outer shell hides correctly AFTER animation
+    const windowClasses = `app-window ${animationClass} ${isActive ? 'active' : ''}`;
+    
     const isFullyMinimized = isMinimized && !animationState;
 
     return (
@@ -24,67 +38,56 @@ function Window({
             handle=".window-header"
             bounds="parent"
             defaultPosition={{ x: defaultX, y: defaultY }}
-            onMouseDown={() => {
-                if (!isFullyMinimized) onFocus(window.id);
-            }}
+            onMouseDown={() => { if (!isFullyMinimized) onFocus(window.id); }}
         >
-            {/* 1. OUTER SHELL: React-Draggable uses this box. NEVER add CSS scaling here! */}
             <div
                 ref={nodeRef}
                 style={{
                     ...style,
                     top: 0,
                     left: 0,
-                    width: `${width}px`,
-                    height: `${height}px`,
+                    width: `${finalWidth}px`,
+                    height: `${finalHeight}px`,
                     zIndex: window.zIndex,
                     position: 'absolute',
-                    // Shuts off the invisible shield so you can click the desktop icons below
                     pointerEvents: isFullyMinimized ? 'none' : 'auto',
                     opacity: isFullyMinimized ? 0 : 1
                 }}
-                onMouseDownCapture={() => {
-                    if (!isFullyMinimized) onFocus(window.id);
-                }}
             >
-                {/* 2. INNER SHELL: This performs the visual shrink/grow math */}
-                <div
-                    className={`app-window ${animationClass}`}
-                    data-app={window.id}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        pointerEvents: isFullyMinimized ? 'none' : 'auto'
-                    }}
-                >
+                <div className={windowClasses} data-app={window.id}>
                     <div className="window-header">
                         <span className="window-title">
-                           {iconSrc && <img src={iconSrc} alt="" className="window-icon" />}
+                            {/* Icon Logic: If iconSrc exists, show it */}
+                            {iconSrc && <img src={iconSrc} alt="" className="window-icon" />}
                             {title}
                         </span>
 
                         <div className="window-controls">
-                            <button className="window-btn minimize-btn"
-                                    aria-label="Minimize"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onMinimize(window.id);
-                                    }}
-                            ></button>
-                            <button className="window-btn maximize-btn" aria-label="Maximize"></button>
+                            {/* Conditional Rendering */}
+                            {showMin && (
+                                <button className="window-btn minimize-btn"
+                                        aria-label="Minimize"
+                                        onClick={(e) => { e.stopPropagation(); onMinimize(window.id); }}
+                                ></button>
+                            )}
+                            {showMax && (
+                                <button className="window-btn maximize-btn" aria-label="Maximize"></button>
+                            )}
+                            {showHlp && (
+                                <button className="window-btn help-btn" onClick={onHelp} aria-label="Help">?</button>
+                            )}
                             <button className="window-btn close-btn" onClick={(e) => {
                                 e.stopPropagation();
                                 onClose();
                             }} aria-label="Close"></button>
                         </div>
-                        
                     </div>
 
                     <div className="window-body">
-                        {React.Children.map(children, child => 
-                            React.isValidElement(child) 
-                            ? React.cloneElement(child, { onOpenWindow }) 
-                            : child
+                        {React.Children.map(children, child =>
+                            React.isValidElement(child)
+                                ? React.cloneElement(child, { onOpenWindow, onClose })
+                                : child
                         )}
                     </div>
                 </div>

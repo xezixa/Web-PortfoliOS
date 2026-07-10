@@ -14,6 +14,7 @@ function Desktop({
                      onFocus,
                      onOpenWindow,
                      onCloseWindow,
+                     focusedWindowId,
                      children
                  }) {
 
@@ -279,39 +280,53 @@ function Desktop({
             </div>
 
             {openWindows.map((win) => {
-                // 1. Safety Guard
+                
                 if (!win || !win.id) return null;
 
                 const isPortfolio = win.id === 'portfolio_app';
-                const winWidth = isPortfolio ? 900 : 600;
-                const winHeight = isPortfolio ? 500 : 400;
+                
+                const winWidth = win.width;
+                const winHeight = win.height;
 
-                // 2. Safe State Evaluation
                 const isMinimized = minimizedWindows.includes(win.id);
-                // OPTIONAL CHAINING FIX: Prevents the "Cannot read properties of undefined" crash
                 const animationState = animatingWindows?.[win.id] || '';
 
                 return (
                     <Window
                         key={win.id}
+                        style={{ zIndex: win.zIndex}}
                         window={win}
                         title={win.title}
-                        iconSrc={icons.find(i => i.id === win.id)?.iconSrc}
+                        iconSrc={win.iconSrc || icons.find(i => i.id === win.id)?.iconSrc}
                         defaultX={win.defaultX}
                         defaultY={win.defaultY}
                         width={winWidth}
                         height={winHeight}
                         onClose={() => onCloseWindow(win.id)}
-                        onFocus={() => onFocus(win.id)}
+                        isActive={win.id === focusedWindowId}
+                        onFocus={() => {
+                            onFocus(win.id);
+                        }}
                         onMinimize={() => onMinimize(win.id)}
-                        // Pass explicit states to Window.jsx
                         isMinimized={isMinimized}
                         animationState={animationState}
                         
-                        onOpenWindow={onOpenWindow}
+                        showMinimize={win.showMinimize ?? true}
+                        showMaximize={win.showMaximize ?? true}
+                        showHelp={win.showHelp ?? false}
+                        onHelp={win.onHelp}
+                        
+                        onOpenWindow={(config) => {
+                            onOpenWindow(config);
+                            
+                            setFocusedWindowId(config.id);
+                        }}
                     >
                         {win.id === 'portfolio_app' ? (
-                            <PortfolioAppContent onOpenWindow={onOpenWindow} />
+                            <PortfolioAppContent onOpenWindow={(config) => {
+                            onOpenWindow(config);
+                            setFocusedWindowId(config.id);
+                            }} />
                         ) : (
                             win.content
                         )}

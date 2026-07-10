@@ -1,22 +1,62 @@
 import React from 'react';
 import './PortfolioAppContent.css';
 import ContactForm from './ContactForm';
+// Don't forget to import your new About section! 
+// (Check this path to make sure it matches your folder structure)
+import AboutSect from './AboutSect';
+import ResumeView from "./ResumeView.jsx";
 
 function PortfolioAppContent({ onOpenWindow }) {
+
     const handleAction = (destination) => {
         if(destination === 'contact') {
-            
             onOpenWindow({
                 id: 'contact_app',
                 title: 'Contact Me',
+                iconSrc: '/contact.png',
                 content: <ContactForm />,
-                defaultX: 200,
-                defaultY: 200,
-                zIndex: 999
+                zIndex: 999,
+                defaultY: 20,
+                showMinimize: false,
+                showMaximize: false,
+                showHelp: true,
+                onHelp: () => alert('Contact Me Help: This is a form to reach out to me!')
+            }); // <-- These closing brackets were missing!
+        }
+        else if (destination === 'about') {
+            onOpenWindow({
+                id: 'about_app',
+                title: 'About Me',
+                iconSrc: './aboutme.png',
+                content: <AboutSect/>,
+                width: 380,
+                defaultX: 110,
+                defaultY: 60,
+                height: 500,
+                zIndex: 999,
+                showMinimize: false,
+                showMaximize: false,
+                showHelp: true
             });
         }
-    };
-    
+        
+        else if (destination === 'resume') {
+            onOpenWindow({
+                id: 'resume-app',
+                title: 'PDFView',
+                iconSrc: './Notepad_WinXP.png',
+                content: <ResumeView/>,
+                width: 590,
+                height: 720,
+                defaultX: 790,
+                zIndex: 999,
+                showMinimize: true,
+                showMaximize: true,
+                showHelp: false
+            });
+        }
+    }; 
+
     return (
         <div className="portfolio-app-container">
             <div className="portfolio-menu-bar">
@@ -25,7 +65,7 @@ function PortfolioAppContent({ onOpenWindow }) {
                 <span className="menu-item">Search</span>
                 <span className="menu-item">Help</span>
             </div>
-            
+
             <div className="portfolio-workspace">
                 <h1 className="portfolio-heading">
                     hello! i'm <span className="bold-name">chase bezilla</span>
@@ -33,24 +73,36 @@ function PortfolioAppContent({ onOpenWindow }) {
                 <p className="portfolio-subheading">
                     welcome to my <em>portfolio.</em>
                 </p>
-                
+
                 <div className="portfolio-navigation-grid">
                     <button
                         className="portfolio-panel-btn"
-                        onClick={() => handleAction('about')}
-                        >
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleAction('about');
+                        }}
+                    >
                         about me
                     </button>
                     <button
                         className="portfolio-panel-btn"
-                        onClick={() => handleAction('contact')}
-                        >
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleAction('contact');
+                        }}
+                    >
                         contact
                     </button>
                     <button
                         className="portfolio-panel-btn"
-                        onClick={() => handleAction('resume')}
-                        >
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                        e.stopPropagation();
+                        handleAction('resume');
+                        }}
+                    >
                         resume
                     </button>
                 </div>

@@ -2,33 +2,156 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #d4d0c8; /* Windows classic gray */
+    background: #C9C9C9;
     font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
     font-size: 11px;
+    padding: 0;
+    gap: 0;
+}
+.contact-header {
+    background-color: #ECEADF;
+    border-bottom: 1.25px solid #808080;
+    box-shadow: inset 0 3px 6px rgba(255,255,255,0.4);
     padding: 10px;
+    width: 100%;
+    height: .03%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box
+}
+
+.form-grid-wrapper {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
+    flex-grow: 0;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: auto 1fr;
     gap: 10px;
     align-items: center;
 }
 
-/* Raised Button Style (for labels) */
-.win-btn-label {
+/* --- Custom Dropdown Styles --- */
+.custom-select-container {
+    position: relative;
+    width: 32%; /* Matches your win-select-short */
+    height: 22px;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.dropdown-trigger {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    /* Sunken border */
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    background: white;
+    cursor: default;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: black;
+}
+
+
+
+/* Turn trigger text blue when active/open */
+.dropdown-trigger.active {
+    background-color: #000080;
+    color: white;
+}
+
+.dropdown-text {
+    flex: 1;
+    padding: 2px 4px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dropdown-arrow {
+    width: 18px;
+    height: 20px;
     background-color: #d4d0c8;
+    border-left: 1px solid #404040;
+    display: flex;
+    color: black;
+    justify-content: center;
+    align-items: center;
+    font-size: 8px;
+    transition: transform 0s ease;
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #404040;
+    z-index: 1000;
+}
+
+.option-item {
+    padding: 2px 4px;
+    cursor: default;
+    color: black;
+    background-color: white;
+}
+
+.option-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+/* Ensures no sticky blue state */
+.option-item.selected {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+
+/* --- Label Styles --- */
+.win-label-button {
+    background-color: #C9C9C9;
     border-top: 1px solid #ffffff;
     border-left: 1px solid #ffffff;
     border-right: 1px solid #404040;
     border-bottom: 1px solid #404040;
-    padding: 2px 4px;
+    padding: 0px 6px;
+    height: 22px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    min-width: 80px;
 }
 
-/* Sunken Input Style */
+.win-label-plain {
+    padding: 2px 6px;
+    min-width: 80px;
+}
+
+/* --- Standard Input Styles --- */
 .win-input {
+    width: 100%;
+    height: 22px;
+    box-sizing: border-box;
     border-top: 1px solid #404040;
     border-left: 1px solid #404040;
     border-right: 1px solid #ffffff;
@@ -38,38 +161,158 @@
     outline: none;
 }
 
-.win-textarea-large {
-    width: 100%;
-    min-height: 200px;
+.win-textarea {
+    width: calc(100% - 30px);
+    box-sizing: border-box;
     border-top: 1px solid #404040;
     border-left: 1px solid #404040;
     border-right: 1px solid #ffffff;
     border-bottom: 1px solid #ffffff;
     background: white;
     resize: none;
+    margin: 15px 15px;
+    flex-grow: 1;
+    min-height: 100px;
 }
 
-.contact-footer-panel {
+/* --- Footer --- */
+.contact-footer {
+    background-color: #ECEADF;
+    border-top: 1.25px solid #808080;
+    box-shadow: inset 0 3px 8px rgba(255,255,255,0.4);
+    padding: 10px;
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: auto;
 }
 
-/* Classic Button Style */
 .win-btn {
-    background-color: #d4d0c8;
-    border-top: 1px solid #ffffff;
-    border-left: 1px solid #ffffff;
-    border-right: 1px solid #404040;
-    border-bottom: 1px solid #404040;
-    padding: 3px 20px;
+    min-width: 80px;
+    padding: 4px 16px;
+    font-size: 12px;
+    border-radius: 3px;
+    border: 1px solid #767676;
+    background: linear-gradient(to bottom, #ffffff, #e1e1e1);
     cursor: pointer;
+    transition: all 0.2s;
+}
+.win-btn:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #d0eaf8, #87c5e6);
+    border-color: #005a9e;
+}
+
+.win-btn:disabled {
+    background: #e6e6e6;
+    color: #a0a0a0;
+    border-color: #acacac;
 }
 
 .win-btn:active {
-    border-top: 1px solid #404040;
-    border-left: 1px solid #404040;
-    border-right: 1px solid #ffffff;
-    border-bottom: 1px solid #ffffff;
+    background: linear-gradient(to bottom, #b3cde4, #70a8c8);
+    border: 1px solid #005a9e;
+    transform: translateY(1px);
+}
+
+
+.confirmation-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -170px;
+    margin-top: -95px;
+    width: 340px; 
+    height: auto;
+    background-color: #ECEADF;
+    
+    border: 1px solid #0054e3;
+    border-top: none;
+    
+    border-radius: 7px 7px 0 0;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.4);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+
+.conf-header {
+    background: #000080;
+    color: white;
+    padding: 2px 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.conf-body-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.conf-white-box {
+    background-color: #ffffff;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    padding: 25px 15px;
+    margin: 15px 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between the two sentences */
+}
+
+.conf-message-primary {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 15px;
+    color: #000;
+}
+
+.conf-message-secondary {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 13px;
+    color: #000;
+}
+
+.conf-footer-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -17px;
+    padding-bottom: 5px;
+}
+
+ .conf-ok-btn {
+    width: 80px !important;
+     padding: 2px 10px;
+ }
+
+.conf-drag-handle {
+    background: linear-gradient(
+            to bottom,
+            #4c84d8 0%,
+            #2c65c4 50%,
+            #1c55b4 100%
+    );
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background-clip: padding-box;
+    padding: 3px 8px;
+    height: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: move;
+    border-bottom: 1px solid #103070;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }

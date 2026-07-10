@@ -1,0 +1,132 @@
+.about-sect-container {
+    background-color: #ECEADF;
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
+    color: #000;
+}
+
+.main-content-wrapper {
+    background: #FFFFFF;
+    border: 1px solid #808080;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.user-info-section {
+    display: flex;
+    padding: 20px;
+    flex: 0 0 auto;
+}
+
+.avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar-box {
+    width: 90px;
+    height: 90px;
+    background: #E3E3E3;
+    border: 1px solid #808080;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3. Birthday Text: Centered, smaller, native feel */
+.dob-text {
+    font-size: 11px;
+    margin-top: 5px;
+    text-align: center;
+    width: 90px;
+}
+
+.info-divider {
+    width: 1px;
+    background: #ACA899;
+    margin: 0 15px;
+}
+
+/* 4. Info Text: Smaller, tighter */
+.info-heading {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.info-body {
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+/* 2. Gray Description: Flush, full border */
+.description-section {
+    background: #EBEBEB;
+    border: 1px solid #808080; /* Solid border connects left/right/bottom/top */
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.desc-heading {
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.desc-text-box {
+    background: white;
+    border: 1px solid #808080;
+    padding: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.footer-area {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+/* 1. Win7 Buttons Restored */
+.win7-btn {
+    min-width: 80px;
+    padding: 4px 16px;
+    font-size: 12px;
+    border-radius: 3px;
+    border: 1px solid #767676;
+    background: linear-gradient(to bottom, #ffffff, #e1e1e1);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.win7-btn:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #d0eaf8, #87c5e6);
+    border-color: #005a9e;
+}
+
+.win7-btn:disabled {
+    background: #e6e6e6;
+    color: #a0a0a0;
+    border-color: #acacac;
+}
+
+.win7-btn:active {
+    background: linear-gradient(to bottom, #b3cde4, #70a8c8);
+    border: 1px solid #005a9e;
+    transform: translateY(1px);
+}
