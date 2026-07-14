@@ -59,10 +59,10 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
+    
 }
 
-/* Icon Selected Overlay */
-/* .desktop-shortcut.app-selected .shortcut-icon-wrapper::after {
+ .desktop-shortcut.app-selected .shortcut-icon-wrapper::after {
     content: '';
     position: absolute;
     top: 0;
@@ -73,5 +73,8 @@
     mix-blend-mode: color;
     opacity: 0.6;
     pointer-events: none;
+     background-color: rgba(60, 120, 216, 0.2);
+     border: 1px solid rgba(60, 120, 216, 0.6);
+     border-radius: 3px;
 }
- */
+ 

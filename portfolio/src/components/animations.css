@@ -10,13 +10,11 @@
 }
 
 .app-window.restoring {
-    /* Prevents the 'FOUC' flash before the animation starts */
     opacity: 0;
     transform: scale(0);
     animation: restoreAnimation 0.3s both ease-out;
 }
 
-/* Uses coordinates calculated from JS. Defaults to 500px down as a safe fallback */
 @keyframes minimizeAnimation {
     0% { transform: translate(0px, 0px) scale(1); opacity: 1; }
     100% { transform: translate(var(--target-x, 0px), var(--target-y, 500px)) scale(0); opacity: 0; }

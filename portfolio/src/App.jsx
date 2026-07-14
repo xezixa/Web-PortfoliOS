@@ -4,6 +4,7 @@ import Taskbar from './components/Taskbar/Taskbar';
 import StartMenu from './components/StartMenu/StartMenu';
 import './components/animations.css';
 import { initialIcons } from './data/desktopIcons';
+import PhotoViewer from './apps/PhotoViewer/PhotoViewer';
 
 function App() {
     const [minimizedWindows, setMinimizedWindows] = useState([]);
@@ -13,6 +14,29 @@ function App() {
     const [focusedWindowId, setFocusedWindowId] = useState('portfolio_app');
 
     const [animatingWindows, setAnimatingWindows] = useState({});
+    
+    const handleOpenPhotoViewer = (photo) => {
+        onOpenWindow({
+            id: 'photo_viewer',
+            title: 'Picture and Fax Viewer',
+            iconSrc: '/camera-icon.png',
+            width: 800,
+            height: 600,
+            content: (
+                <PhotoViewer
+                    photo={photo}
+                    onSetBackground={setWallpaper}
+                />
+            )
+        });
+    }
+    
+    const getEffectiveId = (rawId) => {
+        if (!rawId) return null;
+        if (rawId === 'pdfview.exe') return 'resume-app';
+        if (rawId === 'Photography' || rawId === 'photography' || rawId === 'gallery') return 'gallery_app';
+        return rawId;
+    };
 
     const [openWindows, setOpenWindows] = useState(() => {
         const winWidth = 900;
@@ -104,7 +128,10 @@ function App() {
         }
     };
 
-    const handleRestoreWindow = (id) => {
+    const handleRestoreWindow = (rawId) => {
+        
+        const id = getEffectiveId(rawId);
+        
         setOpenWindows(prev => prev.map(win =>
             win.id === id ? { ...win, zIndex: 1000 } : win
         ));
@@ -137,11 +164,10 @@ function App() {
     };
 
     const handleFocusWindow = (id) => {
-        setFocusedWindowId(id);
-
         const nextZ = activeZIndex + 1;
-        setActiveZIndex(nextZ);
+        setActiveZIndex(nextZ); 
 
+        setFocusedWindowId(id);
         setOpenWindows((prev) =>
             prev.map((win) => {
                 if (win.id === id) {
@@ -153,19 +179,39 @@ function App() {
     };
 
     const handleOpenWindow = (icon) => {
-        if (openWindows.some(win => win.id === icon.id)) {
-            if (minimizedWindows.includes(icon.id)) {
-                handleRestoreWindow(icon.id);
+        
+        const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
+        const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
+        
+        let effectiveId = icon.id;
+        if (isDesktopResume) effectiveId = 'resume-app' ;
+        if (isGallery) effectiveId = 'gallery_app';
+        
+        if (openWindows.some(win => win.id === effectiveId)) {
+            if (minimizedWindows.includes(effectiveId)) {
+                handleRestoreWindow(effectiveId);
             } else {
-                handleFocusWindow(icon.id);
+                handleFocusWindow(effectiveId);
             }
             return;
         }
         
         const isPortfolio = icon.id === 'portfolio_app';
         
-        const winWidth = isPortfolio ? 900 : (icon.width || 600);
-        const winHeight = isPortfolio ? 500 : (icon.height || 400);
+        let winWidth = icon.width || 600;
+        let winHeight = icon.height || 400;
+        
+        if (isPortfolio) {
+            winWidth = 900;
+            winHeight = 500;
+        } else if (isDesktopResume) {
+            winWidth = 590;
+            winHeight = 720;
+        } else if (isGallery) {
+            winWidth = 850;
+            winHeight = 620;
+        }
+        
         
         const taskbarHeight = 40;
         const availableHeight = window.innerHeight - taskbarHeight;
@@ -183,13 +229,13 @@ function App() {
         const finalX = isPortfolio ? centerX : (icon.defaultX !== undefined ? icon.defaultX : centerX);
         const finalY = isPortfolio ? centerY : (icon.defaultY !== undefined ? icon.defaultY : centerY);
         
-        setFocusedWindowId(icon.id);
+        setFocusedWindowId(effectiveId);
 
         const nextZ = activeZIndex + 1;
         setActiveZIndex(nextZ);
 
         setOpenWindows((prev) => {
-            if (prev.some(win => win.id === icon.id)) {
+            if (prev.some(win => win.id === effectiveId)) {
                 return prev;
             }
 
@@ -197,14 +243,14 @@ function App() {
                 ...prev,
                 {
                     ...icon,
-                    id: icon.id,
-                    title: icon.title || icon.label,
+                    id: effectiveId,
+                    title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : (icon.title || icon.label),
                     content: icon.content,
-                    iconSrc: icon.iconSrc,
+                    iconSrc: isGallery ? '/ExplorerIcons/explorer_ico.png' : icon.iconSrc,
                     width: winWidth,
                     height: winHeight,
-                    defaultX: icon.defaultX !== undefined ? icon.defaultX : Math.max(0,centerX),
-                    defaultY: icon.defaultY !== undefined ? icon.defaultY : Math.max(0,centerY),
+                    defaultX: finalX,
+                    defaultY: finalY,
                     zIndex: nextZ
                 }
             ];
@@ -221,6 +267,7 @@ function App() {
         >
             <Desktop
                 currentWallpaper={wallpaper}
+                setWallpaper={setWallpaper}
                 minimizedWindows={minimizedWindows}
                 openWindows={openWindows}
                 animatingWindows={animatingWindows}

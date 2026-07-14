@@ -6,7 +6,6 @@ function Window({
                     window, title, iconSrc, isActive, onOpenWindow, children, onClose, onFocus,
                     width = 600, height = 400, defaultX = 100, defaultY = 100,
                     onMinimize, isMinimized, animationState, style,
-                    // These props control visibility
                     showMinimize = true,
                     showMaximize = true,
                     showHelp = false,
@@ -57,13 +56,11 @@ function Window({
                 <div className={windowClasses} data-app={window.id}>
                     <div className="window-header">
                         <span className="window-title">
-                            {/* Icon Logic: If iconSrc exists, show it */}
                             {iconSrc && <img src={iconSrc} alt="" className="window-icon" />}
                             {title}
                         </span>
 
                         <div className="window-controls">
-                            {/* Conditional Rendering */}
                             {showMin && (
                                 <button className="window-btn minimize-btn"
                                         aria-label="Minimize"

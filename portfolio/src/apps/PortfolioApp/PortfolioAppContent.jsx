@@ -1,8 +1,6 @@
 import React from 'react';
 import './PortfolioAppContent.css';
 import ContactForm from './ContactForm';
-// Don't forget to import your new About section! 
-// (Check this path to make sure it matches your folder structure)
 import AboutSect from './AboutSect';
 import ResumeView from "./ResumeView.jsx";
 
@@ -21,7 +19,7 @@ function PortfolioAppContent({ onOpenWindow }) {
                 showMaximize: false,
                 showHelp: true,
                 onHelp: () => alert('Contact Me Help: This is a form to reach out to me!')
-            }); // <-- These closing brackets were missing!
+            }); 
         }
         else if (destination === 'about') {
             onOpenWindow({

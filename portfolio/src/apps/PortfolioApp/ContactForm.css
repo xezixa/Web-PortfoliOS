@@ -35,7 +35,6 @@
     align-items: center;
 }
 
-/* --- Custom Dropdown Styles --- */
 .custom-select-container {
     position: relative;
     width: 32%; /* Matches your win-select-short */
@@ -64,7 +63,6 @@
 
 
 
-/* Turn trigger text blue when active/open */
 .dropdown-trigger.active {
     background-color: #000080;
     color: white;
@@ -118,14 +116,12 @@
     color: white;
 }
 
-/* Ensures no sticky blue state */
 .option-item.selected {
     background-color: white;
     color: black;
     font-weight: bold;
 }
 
-/* --- Label Styles --- */
 .win-label-button {
     background-color: #C9C9C9;
     border-top: 1px solid #ffffff;
@@ -147,7 +143,6 @@
     min-width: 80px;
 }
 
-/* --- Standard Input Styles --- */
 .win-input {
     width: 100%;
     height: 22px;
@@ -175,7 +170,6 @@
     min-height: 100px;
 }
 
-/* --- Footer --- */
 .contact-footer {
     background-color: #ECEADF;
     border-top: 1.25px solid #808080;
@@ -265,7 +259,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Space between the two sentences */
+    gap: 10px; 
 }
 
 .conf-message-primary {

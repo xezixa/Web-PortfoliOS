@@ -19,7 +19,7 @@ export const initialIcons = [
         iconSrc: '/Device-Manager-Icon.png'
     },
     {
-        id: 'pdfview-app',
+        id: 'resume-app',
         label: 'PDFView.exe',
         iconSrc: '/Notepad_WinXP.png'
     },

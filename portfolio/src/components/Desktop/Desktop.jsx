@@ -1,14 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DesktopIcon from '../DesktopIcon/DesktopIcon';
 import Window from '../Window/Window';
 import { initialIcons } from '../../data/desktopIcons';
 import './Desktop.css';
 import PortfolioAppContent from "../../apps/PortfolioApp/PortfolioAppContent.jsx";
+import GalleryExplorer from "../../apps/GalleryExplorer/GalleryExplorer.jsx";
+import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
 
 function Desktop({
-                     currentWallpaper,
+                     currentWallpaper, 
+                     setWallpaper,
                      minimizedWindows,
-                     openWindows, 
+                     openWindows,
                      animatingWindows,
                      onMinimize,
                      onFocus,
@@ -36,6 +39,7 @@ function Desktop({
     );
 
     const [selectedIconIds, setSelectedIconIds] = useState([]);
+
     const [selection, setSelection] = useState({
         isSelecting: false,
         startX: 0,
@@ -70,27 +74,6 @@ function Desktop({
     useEffect(() => {
         draggedIconRef.current = draggedIcon;
     }, [draggedIcon]);
-
-    useEffect(() => {
-        const handleGlobalClick = (e) => {
-            if (e.target.closest('.desktop-icon')) return;
-
-            if (justFinishedSelecting.current) {
-                justFinishedSelecting.current = false;
-                return;
-            }
-
-            if (draggedIconRef.current) return;
-
-            setSelectedIconIds([]);
-        };
-
-        window.addEventListener('click', handleGlobalClick, true);
-
-        return () => {
-            window.removeEventListener('click', handleGlobalClick, true);
-        };
-    }, []);
 
     const handleMouseDown = (e) => {
 
@@ -280,11 +263,11 @@ function Desktop({
             </div>
 
             {openWindows.map((win) => {
-                
+
                 if (!win || !win.id) return null;
 
                 const isPortfolio = win.id === 'portfolio_app';
-                
+
                 const winWidth = win.width;
                 const winHeight = win.height;
 
@@ -307,30 +290,35 @@ function Desktop({
                         onFocus={() => {
                             onFocus(win.id);
                         }}
+                        isFocused={focusedWindowId === win.id}
                         onMinimize={() => onMinimize(win.id)}
                         isMinimized={isMinimized}
                         animationState={animationState}
-                        
+
                         showMinimize={win.showMinimize ?? true}
                         showMaximize={win.showMaximize ?? true}
                         showHelp={win.showHelp ?? false}
                         onHelp={win.onHelp}
-                        
+
                         onOpenWindow={(config) => {
                             onOpenWindow(config);
-                            
-                            setFocusedWindowId(config.id);
                         }}
                     >
                         {win.id === 'portfolio_app' ? (
                             <PortfolioAppContent onOpenWindow={(config) => {
-                            onOpenWindow(config);
-                            setFocusedWindowId(config.id);
+                                onOpenWindow(config);
                             }} />
+                        ) : win.id === 'resume-app' ? (
+                            <ResumeView onClose={() => onCloseWindow(win.id)} />
+                        ) : win.id === 'gallery_app' ? (
+                            <GalleryExplorer
+                                onOpenWindow={onOpenWindow}
+                                onSetWallpaper={setWallpaper}
+                             />
                         ) : (
                             win.content
                         )}
-                        
+
                     </Window>
                 );
             })}

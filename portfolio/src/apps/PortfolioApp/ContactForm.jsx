@@ -41,6 +41,8 @@ function ContactForm({ onClose }) {
                 <Draggable
                     nodeRef={modalRef} 
                     handle=".conf-drag-handle"
+                    
+                    defaultPosition={{ x: 0, y: -220 }}
                 >
                     <div className="confirmation-modal" ref={modalRef}>
 

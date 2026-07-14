@@ -207,7 +207,7 @@
     border: 1px solid #6b7a94;
     border-top: 1px solid #c7d2e3;
     border-left: 1px solid #c7d2e3;
-    color: #d1d8e0; /* Faded text color */
+    color: #d1d8e0; 
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
