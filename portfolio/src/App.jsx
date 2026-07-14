@@ -5,6 +5,7 @@ import StartMenu from './components/StartMenu/StartMenu';
 import './components/animations.css';
 import { initialIcons } from './data/desktopIcons';
 import PhotoViewer from './apps/PhotoViewer/PhotoViewer';
+import DeviceMgr from './apps/DeviceMgr/DeviceMgr';
 
 function App() {
     const [minimizedWindows, setMinimizedWindows] = useState([]);
@@ -35,6 +36,7 @@ function App() {
         if (!rawId) return null;
         if (rawId === 'pdfview.exe') return 'resume-app';
         if (rawId === 'Photography' || rawId === 'photography' || rawId === 'gallery') return 'gallery_app';
+        if (rawId === 'Technology' || rawId === 'technology' || rawId === 'technology_app') return 'technology_app';
         return rawId;
     };
 
@@ -182,10 +184,12 @@ function App() {
         
         const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
         const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
+        const isDeviceMgr = icon.label === 'Technology' || icon.id === 'technology_app';
         
         let effectiveId = icon.id;
         if (isDesktopResume) effectiveId = 'resume-app' ;
         if (isGallery) effectiveId = 'gallery_app';
+        if (isDeviceMgr) effectiveId = 'technology_app';
         
         if (openWindows.some(win => win.id === effectiveId)) {
             if (minimizedWindows.includes(effectiveId)) {
@@ -210,6 +214,9 @@ function App() {
         } else if (isGallery) {
             winWidth = 850;
             winHeight = 620;
+        } else if (isDeviceMgr) {
+            winWidth = 460;
+            winHeight = 600;
         }
         
         
@@ -244,7 +251,7 @@ function App() {
                 {
                     ...icon,
                     id: effectiveId,
-                    title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : (icon.title || icon.label),
+                    title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
                     content: icon.content,
                     iconSrc: isGallery ? '/ExplorerIcons/explorer_ico.png' : icon.iconSrc,
                     width: winWidth,

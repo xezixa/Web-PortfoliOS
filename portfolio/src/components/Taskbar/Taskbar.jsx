@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import './Taskbar.css';
+import GalleryExplorer from '../../apps/GalleryExplorer/GalleryExplorer';
 
 function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize, focusedWindowId, onToggleStartMenu }) {
     const [time, setTime] = useState('');
@@ -113,7 +114,12 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                                             pointerEvents: 'none'
                                         }}
                                         >
-                                        {win.content}
+                                        {win.id === 'gallery_app' ? (
+                                            <GalleryExplorer onOpenWindow={() => {}} />
+                                            ) : (
+                                        win.content
+                                        )}
+                                            
                                     </div>
                                     </div>
                                 </div>

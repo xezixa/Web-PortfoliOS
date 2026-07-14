@@ -132,10 +132,29 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
             <div className="explorer-body">
                 <div className="explorer-sidebar">
                     {[
-                        {id: 'tasks', title: 'Picture Tasks', content: ['Order prints online', 'View slideshow']},
-                        {id: 'cameras', title: 'Cameras Used', content: ['Sony A7IV', 'Canon AE-1']},
-                        {id: 'lenses', title: 'Lenses and Gear', content: ['Sigma 24-70mm', '50mm Prime']},
-                        {id: 'software', title: 'Editing Software', content: ['Lightroom', 'Photoshop']}
+                        {
+                            id: 'tasks',
+                            title: 'Picture Tasks',
+                            content: [
+                                {name: 'Order prints online', url: 'https://google.com'},
+                                {name: 'View slideshow'},
+                            ]
+                        },
+                        
+                        {
+                            id: 'cameras',
+                            title: 'Cameras Used',
+                            content: [
+                                {name: 'Canon G1 X Mark III', url: 'https://www.usa.canon.com/support/p/powershot-g1-x-mark-iii'},
+                                {name: 'Canon EOS Rebel T5i', url: 'https://www.canon.ca/en/product?name=EOS_Rebel_T5i&category=/en/products/Cameras/DSLR-Cameras/Entry-level'},
+                                {name: 'DJI Osmo Action 4', url: 'https://www.dji.com/osmo-action-4'},
+                                {name: 'Pentax K1000', url: 'https://google.com/'},
+                                {name: 'Minolta SRT 101', url: 'https://google.com/'},
+                            ]
+                        },
+                        
+                        {id: 'lenses', title: 'Lenses and Gear', content: ['Canon EF 50mm f/1.8 STM', 'Canon EF-S 24mm f/2.8 STM', 'Minolta Rokkor 50mm f/1.4 PG','Minolta Rokkor 135mm f/2.8 PF']},
+                        {id: 'software', title: 'Editing Tools', content: ['Adobe Lightroom', 'Adobe Photoshop', 'Audacity']}
                     ].map(group => (
                         <div className="sidebar-group" key={group.id}>
                             <div className="sidebar-header"
@@ -146,7 +165,18 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                             </div>
                             {!collapsed[group.id] && (
                                 <div className="sidebar-content">
-                                    <ul>{group.content.map((item, i) => <li key={i}>{item}</li>)}</ul>
+                                    <ul>{group.content.map((item, i) => (
+                                        <li key={i}>
+                                            {typeof item === 'object' ? (
+                                                <a href={item.url} target="_blank" rel="noopener noreferrer" className="sidebar-link">
+                                                    {item.name}
+                                                </a>
+                                            ) : (
+                                                item
+                                            )}
+                                            </li>
+                                    ))}
+                                    </ul>
                                 </div>
                             )}
                         </div>

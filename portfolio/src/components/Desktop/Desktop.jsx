@@ -6,6 +6,7 @@ import './Desktop.css';
 import PortfolioAppContent from "../../apps/PortfolioApp/PortfolioAppContent.jsx";
 import GalleryExplorer from "../../apps/GalleryExplorer/GalleryExplorer.jsx";
 import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
+import DeviceMgr from "../../apps/DeviceMgr/DeviceMgr.jsx";
 
 function Desktop({
                      currentWallpaper, 
@@ -315,6 +316,8 @@ function Desktop({
                                 onOpenWindow={onOpenWindow}
                                 onSetWallpaper={setWallpaper}
                              />
+                        ) : win.id === 'technology_app' ? (
+                            <DeviceMgr />
                         ) : (
                             win.content
                         )}
