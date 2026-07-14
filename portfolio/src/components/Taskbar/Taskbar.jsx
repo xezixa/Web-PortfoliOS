@@ -53,7 +53,13 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                 {openWindows.map((win) => {
                     const isMinimized = minimizedWindows.includes(win.id);
                     const isActive = win.id === focusedWindowId && !isMinimized;
-
+                    
+                    const previewWidth = 160
+                    const targetWidth = win.width || 800;
+                    const targetHeight = win.height || 600;
+                    const scaleFactor = previewWidth / targetWidth;
+                    const previewHeight = targetHeight * scaleFactor;
+                    
                     return (
                         <div
                             key={win.id}
@@ -86,8 +92,27 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                                         {win.iconSrc && <img src={win.iconSrc} alt="" style={{ width: '12px', height: '12px', marginRight: '5px' }}/>}
                                         <span>{win.title}</span>
                                     </div>
-                                    <div className="window-preview-content-wrapper">
-                                    <div className="window-preview-content">
+                                    <div className="window-preview-content-wrapper"
+                                    style={{
+                                            width: `${previewWidth}px`,
+                                            height: `${previewHeight}px`,
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}
+                                    >
+                                    <div
+                                        className="window-preview-content"
+                                        style={{
+                                            width: `${targetWidth}px`,
+                                            height: `${targetHeight}px`,
+                                            transform: `scale(${scaleFactor})`,
+                                            transformOrigin: 'top left',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            pointerEvents: 'none'
+                                        }}
+                                        >
                                         {win.content}
                                     </div>
                                     </div>
