@@ -13,6 +13,8 @@ function App() {
     const [wallpaper, setWallpaper] = useState('/blissminimal.png');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [focusedWindowId, setFocusedWindowId] = useState('portfolio_app');
+    
+    const [isSystemLoading, setIsSystemLoading] = useState(false);
 
     const [animatingWindows, setAnimatingWindows] = useState({});
     
@@ -182,6 +184,12 @@ function App() {
 
     const handleOpenWindow = (icon) => {
         
+        setIsSystemLoading(true);
+        
+        setTimeout(() => {
+            setIsSystemLoading(false);
+        }, 600);
+        
         const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
         const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
         const isDeviceMgr = icon.label === 'Technology' || icon.id === 'technology_app';
@@ -253,7 +261,7 @@ function App() {
                     id: effectiveId,
                     title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
                     content: icon.content,
-                    iconSrc: isGallery ? '/ExplorerIcons/explorer_ico.png' : icon.iconSrc,
+                    iconSrc: isGallery ? '/photofolder2.png' : icon.iconSrc,
                     width: winWidth,
                     height: winHeight,
                     defaultX: finalX,

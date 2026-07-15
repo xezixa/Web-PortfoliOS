@@ -317,7 +317,10 @@ function Desktop({
                                 onSetWallpaper={setWallpaper}
                              />
                         ) : win.id === 'technology_app' ? (
-                            <DeviceMgr />
+                            <DeviceMgr
+                            onOpenWindow={onOpenWindow}
+                            onCloseWindow={onCloseWindow}
+                            />
                         ) : (
                             win.content
                         )}

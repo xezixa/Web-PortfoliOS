@@ -24,3 +24,24 @@
     0% { transform: translate(var(--target-x, 0px), var(--target-y, 500px)) scale(0); opacity: 0; }
     100% { transform: translate(0px, 0px) scale(1); opacity: 1; }
 }
+
+body, .os-root {
+    cursor: url('../../public/cursors/c_arrow.png') 9 8.2 , default;
+}
+
+button, a, .desktop-shortcut, .tree-row {
+    cursor: url('../../public/cursors/c_hand.png') 10 8, pointer;
+}
+
+input, textarea, .status-textarea {
+    cursor: url('../../public/cursors/c_text.png'), text;
+}
+
+button,
+a,
+.desktop-shortcut,
+.tree-row,
+.taskbar-task-btn {
+    outline: 1px solid #00ff00 !important; /* Bright green box */
+    outline-offset: -1px; /* Draws the line strictly inside the element bounds */
+}

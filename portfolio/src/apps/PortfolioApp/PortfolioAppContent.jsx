@@ -58,10 +58,7 @@ function PortfolioAppContent({ onOpenWindow }) {
     return (
         <div className="portfolio-app-container">
             <div className="portfolio-menu-bar">
-                <span className="menu-item">File</span>
-                <span className="menu-item">Edit</span>
-                <span className="menu-item">Search</span>
-                <span className="menu-item">Help</span>
+                <span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span>
             </div>
 
             <div className="portfolio-workspace">

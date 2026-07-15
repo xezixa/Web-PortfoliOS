@@ -11,14 +11,24 @@
 
 .portfolio-menu-bar {
     display: flex;
-    gap: 16px;
-    background-color: #f0ede6;
-    border-bottom: 2px solid #d4d0c8;
-    padding: 4px 12px;
+    gap: 12px;
+    padding: 2px 8px;
+    background-color: #ece9d8;
+    border-bottom: 1px solid #d4d0c8;
+    font-size: 11px;
+    color: #000;
     font-family: 'Pixelated Tahoma', sans-serif;
-    font-size: 13px;
-    user-select: none;
+    
 }
+.portfolio-menu-bar span {
+    padding: 3px 4px;
+    cursor: default;
+}
+.portfolio-menu-bar span:hover {
+    background-color: #316ac5;
+    color: #fff;
+}
+
 
 .menu-item {
     cursor: default;

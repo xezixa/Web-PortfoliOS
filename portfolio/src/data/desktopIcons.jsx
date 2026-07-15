@@ -5,13 +5,13 @@ export const initialIcons = [
     {
         id: 'recycle-bin',
         label: 'Recycle Bin',
-        iconSrc: '/ModernXP-75-Trash-icon.png'
+        iconSrc: '/recyc-full.png'
 
     },
     {
         id: 'photography-app',
         label: 'Photography',
-        iconSrc: '/camera-icon.png'
+        iconSrc: '/photofolder2.png'
     },
     {
         id: 'technology-app',

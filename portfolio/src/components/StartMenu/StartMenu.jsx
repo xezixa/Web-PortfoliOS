@@ -28,9 +28,9 @@ const StartMenu = ({ isOpen, onClose }) => {
     
     const rightLinks = [
         { label: 'Device Manager', icon: '/Device-Manager-Icon.png' },
-        { label: 'My Pictures', icon: '/folder.png' },
+        { label: 'My Pictures', icon: '/photofolder2.png' },
         { type: 'separator' },
-        { label: 'Recycle Bin', icon: '/ModernXP-75-Trash-icon.png' },
+        { label: 'Recycle Bin', icon: '/recyc-full.png' },
         { label: 'System Properties', icon: '/SysProperties.png' },
     ];
     

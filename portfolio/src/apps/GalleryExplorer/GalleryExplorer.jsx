@@ -7,7 +7,7 @@ import PhotoViewer from '../PhotoViewer/PhotoViewer';
 function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
     const [history, setHistory] = useState([null]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [collapsed, setCollapsed] = useState({tasks: false, cameras: false, lenses: false, software: false});
+    const [collapsed, setCollapsed] = useState({tasks: false, cameras: true, lenses: true, software: true});
     const [selectedId, setSelectedId] = useState(null);
 
     const currentAlbumId = history[currentIndex];
@@ -42,7 +42,7 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
         onOpenWindow({
             id: 'photo_viewer',
             title: 'Photo and Fax Viewer',
-            iconSrc: '/camera-icon.png',
+            iconSrc: '/photoview.png',
             width: 900,
             height: 700,
             content: (
@@ -63,20 +63,14 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
             <div className="explorer-toolbar">
                 <div className="toolbar-section">
                     <button className={`toolbar-btn ${currentIndex === 0 ? 'disabled' : ''}`} onClick={handleBack}>
-                        <div className="css-nav-circle back">
-                            <div className="nav-arrow-head left"></div>
-                            <div className="nav-arrow-tail"></div>
-                        </div>
+                        <img src="/ExplorerIcons/Back.png" alt="Back" className="nav-icon-img" />
                         <span>Back</span>
                         <div className="css-dropdown-arrow"></div>
                     </button>
 
                     <button className={`toolbar-btn ${currentIndex === history.length - 1 ? 'disabled' : ''}`}
                             onClick={handleForward}>
-                        <div className="css-nav-circle forward">
-                            <div className="nav-arrow-tail"></div>
-                            <div className="nav-arrow-head right"></div>
-                        </div>
+                       <img src="/ExplorerIcons/Forward.png" alt="Forward" className="nav-icon-img" />
                         <div className="css-dropdown-arrow"></div>
                     </button>
                     <button
@@ -119,14 +113,9 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                 </div>
                 <button className="address-go-btn">
                     {/* The green native box */}
-                    <div className="green-go-box">
-                        <div className="go-arrow-container">
-                            <div className="go-arrow-body"></div>
-                            <div className="go-arrow-head"></div>
-                        </div>
-                    </div>
-                    <span>Go</span>
+                    <img src="/ExplorerIcons/Go.png" alt="Go" className="go-icon-img" />
                 </button>
+                <span>Go</span>
             </div>
 
             <div className="explorer-body">

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="21" height="18" viewBox="0 0 21 18">
+  <defs>
+    <filter id="Union_1" x="0" y="0" width="21" height="18" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur result="blur"/>
+      <feFlood flood-color="#fff"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Union_1-2" x="0" y="0" width="21" height="18" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="0.5" result="blur-2"/>
+      <feFlood flood-opacity="0.302" result="color"/>
+      <feComposite operator="out" in="SourceGraphic" in2="blur-2"/>
+      <feComposite operator="in" in="color"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g data-type="innerShadowGroup">
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Union_1)">
+      <path id="Union_1-3" data-name="Union 1" d="M9.894,0,21,8.5,9.894,17ZM0,11.732V5.268H9.894v6.465Z" transform="translate(21 17) rotate(180)" fill="#b9b9b9"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Union_1-2)">
+      <path id="Union_1-4" data-name="Union 1" d="M9.894,0,21,8.5,9.894,17ZM0,11.732V5.268H9.894v6.465Z" transform="translate(21 17) rotate(180)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
