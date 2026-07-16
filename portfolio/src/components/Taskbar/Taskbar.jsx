@@ -18,7 +18,7 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
             setTime(`${hours}:${minutes} ${ampm}`);
         };
         updateClock();
-        const timerId = setInterval(updateClock, 60000);
+        const timerId = setInterval(updateClock, 1000);
         return () => clearInterval(timerId);
     }, []);
 

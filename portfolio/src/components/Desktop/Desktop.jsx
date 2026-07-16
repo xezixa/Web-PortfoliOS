@@ -65,7 +65,9 @@ function Desktop({
             return {
                 id: iconId,
                 offsetX: mouseX - (targetIcon ? targetIcon.x : 0),
-                offsetY: mouseY - (targetIcon ? targetIcon.y : 0)
+                offsetY: mouseY - (targetIcon ? targetIcon.y : 0),
+                originalX: targetIcon ? targetIcon.x : 0,
+                originalY: targetIcon ? targetIcon.y : 0
             };
         });
         setDraggedIcon(dragGroup);
@@ -174,24 +176,41 @@ function Desktop({
             const GRID_SIZE_Y = 84;
             const PADDING = 10;
 
-            setIcons(prevIcons =>
-                prevIcons.map(icon => {
-                    const wasDragged = draggedIcon.some(d => d.id === icon.id);
-                    if (wasDragged) {
-                        const snappedX = Math.round((icon.x - PADDING) / GRID_SIZE_X) * GRID_SIZE_X + PADDING;
-                        const snappedY = Math.round((icon.y - PADDING) / GRID_SIZE_Y) * GRID_SIZE_Y + PADDING;
+            setIcons(prevIcons => {
+                const draggedIntentions = draggedIcon.map(dragData => {
+                    const currentIcon = prevIcons.find(i => i.id === dragData.id);
+                    const snappedX = Math.round((currentIcon.x - PADDING) / GRID_SIZE_X) * GRID_SIZE_X + PADDING;
+                    const snappedY = Math.round((currentIcon.y - PADDING) / GRID_SIZE_Y) * GRID_SIZE_Y + PADDING;
 
                         return {
-                            ...icon,
-                            x: Math.max(PADDING, snappedX),
-                            y: Math.max(PADDING, snappedY)
+                            id: dragData.id,
+                            intendedX: Math.max(PADDING, snappedX),
+                            intendedY: Math.max(PADDING, snappedY),
+                            originalX: dragData.originalX,
+                            originalY: dragData.originalY
                         };
-                    }
-                    return icon;
-                })
-            );
+                    });
+                    return prevIcons.map(icon => {
+                        const intention = draggedIntentions.find(intent => intent.id === icon.id);
+                        
+                        if (intention) {
+                            const isOccupied = prevIcons.some(otherIcon => {
+                                const isNotBeingDragged = !draggedIntentions.some(intent => intent.id === otherIcon.id);
+                                return isNotBeingDragged &&
+                                    otherIcon.x === intention.intendedX &&
+                                    otherIcon.y === intention.intendedY;
+                            });
+                            
+                            if (isOccupied) {
+                                return {...icon, x: intention.originalX, y: intention.originalY};
+                            } else {
+                                return { ...icon, x: intention.intendedX, y: intention.intendedY };
+                            }
+                        }
+                        return icon;
+                    });
+                });
             justFinishedSelecting.current = true;
-
             setDraggedIcon(null);
             return;
         }

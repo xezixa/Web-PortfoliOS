@@ -13,9 +13,6 @@ function App() {
     const [wallpaper, setWallpaper] = useState('/blissminimal.png');
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [focusedWindowId, setFocusedWindowId] = useState('portfolio_app');
-    
-    const [isSystemLoading, setIsSystemLoading] = useState(false);
-
     const [animatingWindows, setAnimatingWindows] = useState({});
     
     const handleOpenPhotoViewer = (photo) => {
@@ -184,92 +181,92 @@ function App() {
 
     const handleOpenWindow = (icon) => {
         
-        setIsSystemLoading(true);
+        document.body.classList.add('is-system-loading');
         
         setTimeout(() => {
-            setIsSystemLoading(false);
-        }, 600);
-        
-        const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
-        const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
-        const isDeviceMgr = icon.label === 'Technology' || icon.id === 'technology_app';
-        
-        let effectiveId = icon.id;
-        if (isDesktopResume) effectiveId = 'resume-app' ;
-        if (isGallery) effectiveId = 'gallery_app';
-        if (isDeviceMgr) effectiveId = 'technology_app';
-        
-        if (openWindows.some(win => win.id === effectiveId)) {
-            if (minimizedWindows.includes(effectiveId)) {
-                handleRestoreWindow(effectiveId);
-            } else {
-                handleFocusWindow(effectiveId);
-            }
-            return;
-        }
-        
-        const isPortfolio = icon.id === 'portfolio_app';
-        
-        let winWidth = icon.width || 600;
-        let winHeight = icon.height || 400;
-        
-        if (isPortfolio) {
-            winWidth = 900;
-            winHeight = 500;
-        } else if (isDesktopResume) {
-            winWidth = 590;
-            winHeight = 720;
-        } else if (isGallery) {
-            winWidth = 850;
-            winHeight = 620;
-        } else if (isDeviceMgr) {
-            winWidth = 460;
-            winHeight = 600;
-        }
-        
-        
-        const taskbarHeight = 40;
-        const availableHeight = window.innerHeight - taskbarHeight;
-        
-        const centerX = (window.innerWidth / 2) - (winWidth / 2);
-        let centerY = (window.innerHeight / 2) - (winHeight / 2);
+            document.body.classList.remove('is-system-loading');
 
-        if (icon.id === 'resume-app') {
-            centerY = centerY -25;
-        }
+            const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
+            const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
+            const isDeviceMgr = icon.label === 'Technology' || icon.id === 'technology_app';
 
-        if (centerY < 10) centerY = 10;
-        if (centerX < 10) centerX = 10;
+            let effectiveId = icon.id;
+            if (isDesktopResume) effectiveId = 'resume-app';
+            if (isGallery) effectiveId = 'gallery_app';
+            if (isDeviceMgr) effectiveId = 'technology_app';
 
-        const finalX = isPortfolio ? centerX : (icon.defaultX !== undefined ? icon.defaultX : centerX);
-        const finalY = isPortfolio ? centerY : (icon.defaultY !== undefined ? icon.defaultY : centerY);
-        
-        setFocusedWindowId(effectiveId);
-
-        const nextZ = activeZIndex + 1;
-        setActiveZIndex(nextZ);
-
-        setOpenWindows((prev) => {
-            if (prev.some(win => win.id === effectiveId)) {
-                return prev;
-            }
-
-            return [
-                ...prev,
-                {
-                    ...icon,
-                    id: effectiveId,
-                    title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
-                    content: icon.content,
-                    iconSrc: isGallery ? '/photofolder2.png' : icon.iconSrc,
-                    width: winWidth,
-                    height: winHeight,
-                    defaultX: finalX,
-                    defaultY: finalY,
-                    zIndex: nextZ
+            if (openWindows.some(win => win.id === effectiveId)) {
+                if (minimizedWindows.includes(effectiveId)) {
+                    handleRestoreWindow(effectiveId);
+                } else {
+                    handleFocusWindow(effectiveId);
                 }
-            ];
-        });
+                return;
+            }
+
+            const isPortfolio = icon.id === 'portfolio_app';
+
+            let winWidth = icon.width || 600;
+            let winHeight = icon.height || 400;
+
+            if (isPortfolio) {
+                winWidth = 900;
+                winHeight = 500;
+            } else if (isDesktopResume) {
+                winWidth = 590;
+                winHeight = 720;
+            } else if (isGallery) {
+                winWidth = 850;
+                winHeight = 620;
+            } else if (isDeviceMgr) {
+                winWidth = 460;
+                winHeight = 600;
+            }
+
+
+            const taskbarHeight = 40;
+            const availableHeight = window.innerHeight - taskbarHeight;
+
+            const centerX = (window.innerWidth / 2) - (winWidth / 2);
+            let centerY = (window.innerHeight / 2) - (winHeight / 2);
+
+            if (icon.id === 'resume-app') {
+                centerY = centerY - 25;
+            }
+
+            if (centerY < 10) centerY = 10;
+            if (centerX < 10) centerX = 10;
+
+            const finalX = isPortfolio ? centerX : (icon.defaultX !== undefined ? icon.defaultX : centerX);
+            const finalY = isPortfolio ? centerY : (icon.defaultY !== undefined ? icon.defaultY : centerY);
+
+            setFocusedWindowId(effectiveId);
+
+            const nextZ = activeZIndex + 1;
+            setActiveZIndex(nextZ);
+
+            setOpenWindows((prev) => {
+                if (prev.some(win => win.id === effectiveId)) {
+                    return prev;
+                }
+
+                return [
+                    ...prev,
+                    {
+                        ...icon,
+                        id: effectiveId,
+                        title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
+                        content: icon.content,
+                        iconSrc: isGallery ? '/photofolder2.png' : icon.iconSrc,
+                        width: winWidth,
+                        height: winHeight,
+                        defaultX: finalX,
+                        defaultY: finalY,
+                        zIndex: nextZ
+                    }
+                ];
+            });
+        }, 600);
     };
 
     return (

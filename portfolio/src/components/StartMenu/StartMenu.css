@@ -1,37 +1,38 @@
 .start-menu-container {
     position: fixed;
-    bottom: 40px;
+    bottom: 37px;
     left: 0;
-    width: 360px;
+    width: 340px;
     background: #ffffff;
     border: 1px solid #003c74;
-    border-radius: 8px 8px 0 0;
+    border-radius: 5px 5px 0 0;
     overflow: hidden;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 2px -2px 10px rgba(0,0,0,0.5);
     z-index: 1000;
-    font-family: 'Tahoma', 'Verdana', sans-serif;
+    font-family: 'Tahoma', 'Segoe UI', sans-serif;
   
 }
 
 .start-menu-header {
-    background: linear-gradient(to bottom, #3a8cfc, #0054e3);
-    padding: 20px 20px;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: bold;
+    background: linear-gradient(to bottom, #4c84d8 0%, #2c65c4 50%, #1c55b4 100%);
+    border-top: 1px solid #7ea8e6;
+    border-bottom: 1px solid #103070;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    padding: 14px 14px;
     display: flex;
     align-items: center;
+    gap: 12px;
     justify-content: flex-start;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
 }
 .start-menu-header h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     letter-spacing: 1px;
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    text-shadow: 1px 1.5px 2px rgba(0,20,60,0.7); !important;
+    text-shadow: 1px 1.5px 2px rgba(0,0,0,0.8); !important;
     background: none;
     -webkit-background-clip: unset !important;
 }
@@ -42,7 +43,7 @@
 }
 
 .menu-left {
-    width: 42%;
+    width: 45%;
     background: white;
     padding: 6px 0;
     display: flex;
@@ -50,8 +51,8 @@
 }
 
 .menu-right {
-    width: 58%;
-    background: #d3e0ff;
+    width: 55%;
+    background: #d3e5fa;
     padding: 6px 0;
     border-left: 1px solid #b0c4de;
     display: flex;
@@ -61,8 +62,11 @@
 .menu-item {
     display: flex;
     align-items: center;
-    padding: 6px 10px;
+    padding: 4px 10px;
+    margin: 1px 4px;
     cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid transparent;
 }
 
 .menu-item:hover {
@@ -70,13 +74,13 @@
 }
 
 .menu-left .menu-item span{
-    font-size: 13px;
+    font-size: 11px;
     color: #000000;
 }
 
 .menu-left .menu-item img {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     margin-right: 12px;
 }
 
@@ -95,14 +99,16 @@
 
 .menu-separator {
     border: 0;
-    border-top: 1px solid #aebac6;
+    border-top: 1px solid #8ebcf2;
     border-bottom: 1px solid #ffffff;
-    margin: 6px 15px;
+    margin: 6px 10px;
 }
 
 .start-menu-footer {
-    background: linear-gradient(to bottom, #3a8cfc, #0054e3);
-    padding: 6px 10px;
+    background: linear-gradient(to bottom, #4c84d8 0%, #2c65c4 50%, #1c55b4 100%);
+    border-top: 1px solid #103070;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    padding: 8px 12px;
     display: flex;
     justify-content: flex-end;
 }

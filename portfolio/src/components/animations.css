@@ -34,14 +34,21 @@ button, a, .desktop-shortcut, .tree-row {
 }
 
 input, textarea, .status-textarea {
-    cursor: url('../../public/cursors/c_text.png'), text;
+    cursor: url('../../public/cursors/c_text.png') 14 12, text;
 }
+
+body.is-system-loading,
+body.is-system-loading * {
+    cursor: url('../../public/cursors/c_wait.png') 9 8.2, wait !important;
+}
+
 
 button,
 a,
 .desktop-shortcut,
 .tree-row,
+.win-textarea,
 .taskbar-task-btn {
-    outline: 1px solid #00ff00 !important; /* Bright green box */
-    outline-offset: -1px; /* Draws the line strictly inside the element bounds */
+ /* outline: 1px solid #00ff00 !important; /* Bright green box */
+ /* outline-offset: -1px; /* Draws the line strictly inside the element bounds */
 }

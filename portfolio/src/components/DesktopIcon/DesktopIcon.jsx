@@ -5,19 +5,30 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
 
     const handleClick = (e) => {
         e.stopPropagation();
-        onSelect(id);
+        // We removed onSelect(id) from here because it is now handled the instant you click down!
     };
-    
+
     const handleDoubleClick = (e) => {
         e.stopPropagation();
         if (onOpen) onOpen();
     };
-const handleMouseDown = (e) => {
-    if (onDragStart) {
-        onDragStart(id, e.clientX, e.clientY);
-    }
-}
-    
+
+    const handleMouseDown = (e) => {
+        // CRITICAL: This stops the click from passing through to the Desktop background
+        e.stopPropagation();
+
+        // e.button === 0 ensures this ONLY triggers on a Left Click
+        if (e.button === 0) {
+            // 1. Instantly select the icon the millisecond the mouse button is pressed
+            onSelect(id);
+
+            // 2. Begin the drag logic immediately
+            if (onDragStart) {
+                onDragStart(id, e.clientX, e.clientY);
+            }
+        }
+    };
+
     return (
         <div
             className={`desktop-shortcut ${isSelected ? 'app-selected' : ''}`}
@@ -36,7 +47,7 @@ const handleMouseDown = (e) => {
                     src={iconSrc}
                     alt={label}
                     className="shortcut-icon-img"
-                    draggable="false" 
+                    draggable="false"
                 />
             </div>
             <span className="shortcut-label">{label}</span>
