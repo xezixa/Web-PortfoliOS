@@ -9,7 +9,7 @@ import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
 import DeviceMgr from "../../apps/DeviceMgr/DeviceMgr.jsx";
 
 function Desktop({
-                     currentWallpaper, 
+                     currentWallpaper,
                      setWallpaper,
                      minimizedWindows,
                      openWindows,
@@ -53,6 +53,8 @@ function Desktop({
     const desktopRef = useRef(null);
     const iconsContainerRef = useRef(null);
     const justFinishedSelecting = useRef(false);
+    const isBackgroundMouseDown = useRef(false);
+    const dragStartCoords = useRef({ x: 0, y: 0 });
 
     const handleDragStart = (ids, clientX, clientY) => {
         const iconsToDrag = Array.isArray(ids) ? ids : [ids];
@@ -91,8 +93,11 @@ function Desktop({
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
+        isBackgroundMouseDown.current = true;
+        dragStartCoords.current = { x, y };
+
         setSelection({
-            isSelecting: true,
+            isSelecting: false,
             startX: x,
             startY: y,
             currentX: x,
@@ -124,49 +129,62 @@ function Desktop({
             return;
         }
 
-        if (!selection.isSelecting) return;
+        if (!isBackgroundMouseDown.current) return;
 
         const rect = desktopRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        setSelection(prev => ({
-            ...prev,
-            currentX: x,
-            currentY: y
-        }));
+        const deltaX = Math.abs(x - dragStartCoords.current.x);
+        const deltaY = Math.abs(y - dragStartCoords.current.y);
 
-        if (iconsContainerRef.current) {
-            const startX = selection.startX + rect.left;
-            const startY = selection.startY + rect.top;
-            const currentX = e.clientX;
-            const currentY = e.clientY;
+        if (!selection.isSelecting && (deltaX > 3 || deltaY > 3)) {
+            setSelection({
+                isSelecting: true,
+                startX: dragStartCoords.current.x,
+                startY: dragStartCoords.current.y,
+                currentX: x,
+                currentY: y
+            });
+        } else if (selection.isSelecting) {
+            setSelection(prev => ({
+                ...prev,
+                currentX: x,
+                currentY: y
+            }));
 
-            const boxLeft = Math.min(startX, currentX);
-            const boxTop = Math.min(startY, currentY);
-            const boxRight = Math.max(startX, currentX);
-            const boxBottom = Math.max(startY, currentY);
+            if (iconsContainerRef.current) {
+                const startX = selection.startX + rect.left;
+                const startY = selection.startY + rect.top;
+                const currentX = e.clientX;
+                const currentY = e.clientY;
 
-            const newlySelected = [];
+                const boxLeft = Math.min(startX, currentX);
+                const boxTop = Math.min(startY, currentY);
+                const boxRight = Math.max(startX, currentX);
+                const boxBottom = Math.max(startY, currentY);
 
-            const iconElements = iconsContainerRef.current.children;
-            for (let i = 0; i < iconElements.length; i++) {
-                const iconEl = iconElements[i];
-                const iconRect = iconEl.getBoundingClientRect();
-                const iconId = iconEl.getAttribute('data-id');
+                const newlySelected = [];
 
-                const isOverlapping = !(
-                    iconRect.right < boxLeft ||
-                    iconRect.left > boxRight ||
-                    iconRect.bottom < boxTop ||
-                    iconRect.top > boxBottom
-                );
+                const iconElements = iconsContainerRef.current.children;
+                for (let i = 0; i < iconElements.length; i++) {
+                    const iconEl = iconElements[i];
+                    const iconRect = iconEl.getBoundingClientRect();
+                    const iconId = iconEl.getAttribute('data-id');
 
-                if (isOverlapping && iconId) {
-                    newlySelected.push(iconId);
+                    const isOverlapping = !(
+                        iconRect.right < boxLeft ||
+                        iconRect.left > boxRight ||
+                        iconRect.bottom < boxTop ||
+                        iconRect.top > boxBottom
+                    );
+
+                    if (isOverlapping && iconId) {
+                        newlySelected.push(iconId);
+                    }
                 }
+                setSelectedIconIds(newlySelected);
             }
-            setSelectedIconIds(newlySelected);
         }
     };
 
@@ -182,38 +200,40 @@ function Desktop({
                     const snappedX = Math.round((currentIcon.x - PADDING) / GRID_SIZE_X) * GRID_SIZE_X + PADDING;
                     const snappedY = Math.round((currentIcon.y - PADDING) / GRID_SIZE_Y) * GRID_SIZE_Y + PADDING;
 
-                        return {
-                            id: dragData.id,
-                            intendedX: Math.max(PADDING, snappedX),
-                            intendedY: Math.max(PADDING, snappedY),
-                            originalX: dragData.originalX,
-                            originalY: dragData.originalY
-                        };
-                    });
-                    return prevIcons.map(icon => {
-                        const intention = draggedIntentions.find(intent => intent.id === icon.id);
-                        
-                        if (intention) {
-                            const isOccupied = prevIcons.some(otherIcon => {
-                                const isNotBeingDragged = !draggedIntentions.some(intent => intent.id === otherIcon.id);
-                                return isNotBeingDragged &&
-                                    otherIcon.x === intention.intendedX &&
-                                    otherIcon.y === intention.intendedY;
-                            });
-                            
-                            if (isOccupied) {
-                                return {...icon, x: intention.originalX, y: intention.originalY};
-                            } else {
-                                return { ...icon, x: intention.intendedX, y: intention.intendedY };
-                            }
-                        }
-                        return icon;
-                    });
+                    return {
+                        id: dragData.id,
+                        intendedX: Math.max(PADDING, snappedX),
+                        intendedY: Math.max(PADDING, snappedY),
+                        originalX: dragData.originalX,
+                        originalY: dragData.originalY
+                    };
                 });
+                return prevIcons.map(icon => {
+                    const intention = draggedIntentions.find(intent => intent.id === icon.id);
+
+                    if (intention) {
+                        const isOccupied = prevIcons.some(otherIcon => {
+                            const isNotBeingDragged = !draggedIntentions.some(intent => intent.id === otherIcon.id);
+                            return isNotBeingDragged &&
+                                otherIcon.x === intention.intendedX &&
+                                otherIcon.y === intention.intendedY;
+                        });
+
+                        if (isOccupied) {
+                            return {...icon, x: intention.originalX, y: intention.originalY};
+                        } else {
+                            return { ...icon, x: intention.intendedX, y: intention.intendedY };
+                        }
+                    }
+                    return icon;
+                });
+            });
             justFinishedSelecting.current = true;
             setDraggedIcon(null);
             return;
         }
+
+        isBackgroundMouseDown.current = false;
 
         if (!selection.isSelecting) return;
 
@@ -334,11 +354,11 @@ function Desktop({
                             <GalleryExplorer
                                 onOpenWindow={onOpenWindow}
                                 onSetWallpaper={setWallpaper}
-                             />
+                            />
                         ) : win.id === 'technology_app' ? (
                             <DeviceMgr
-                            onOpenWindow={onOpenWindow}
-                            onCloseWindow={onCloseWindow}
+                                onOpenWindow={onOpenWindow}
+                                onCloseWindow={onCloseWindow}
                             />
                         ) : (
                             win.content

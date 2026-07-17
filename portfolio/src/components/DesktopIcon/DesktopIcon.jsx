@@ -37,13 +37,16 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
                 top: `${y}px`
             }}
         >
-            <div className="shortcut-icon-wrapper">
+            <div 
+                className="shortcut-icon-wrapper"
+                style={{ '--icon-url': `url(${iconSrc})` }}
+                >
                 <img
                     src={iconSrc}
                     alt={label}
                     className="shortcut-icon-img"
-                    draggable="false"
-                />
+                    draggable="false"/>
+                
             </div>
             <span className="shortcut-label">{label}</span>
         </div>
