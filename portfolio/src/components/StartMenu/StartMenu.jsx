@@ -6,6 +6,11 @@ const StartMenu = ({ isOpen, onClose }) => {
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (isOpen && menuRef.current && !menuRef.current.contains(e.target)) {
+                
+                if (e.target.closest('.taskbar-start-button')) {
+                    return;
+                }
+                
                 onClose();
             }
         };

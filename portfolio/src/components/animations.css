@@ -26,7 +26,7 @@
 }
 
 body, .os-root {
-    cursor: url('../../public/cursors/c_arrow.png') 9 8.2 , default;
+    cursor: url('../../public/cursors/c_arrow.png') 9 8.2, default;
 }
 
 button, a, .desktop-shortcut, .tree-row {
@@ -39,7 +39,7 @@ input, textarea, .status-textarea {
 
 body.is-system-loading,
 body.is-system-loading * {
-    cursor: url('../../public/cursors/c_wait.png') 9 8.2, wait !important;
+    cursor: url('../../public/cursors/c_wait.png') 9 8.2, url('/cursors/c_arrow.png') 9 8.2, default !important;
 }
 
 

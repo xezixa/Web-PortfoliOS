@@ -128,6 +128,24 @@ function App() {
             }
         }
     };
+    
+    const handleReorderWindows = (draggedId, targetId) => {
+        setOpenWindows(prev => {
+            const draggedIndex = prev.findIndex(w => w.id === draggedId);
+            const targetIndex = prev.findIndex(w => w.id === targetId);
+            
+            if (draggedIndex === -1 || targetIndex === -1 || draggedIndex === targetIndex) {
+                return prev;
+            }
+            
+            const newOrder = [...prev];
+            const [draggedItem] = newOrder.splice(draggedIndex, 1);
+            newOrder.splice(targetIndex, 0, draggedItem);
+            
+            return newOrder;
+            
+        });
+    };
 
     const handleRestoreWindow = (rawId) => {
         
@@ -298,8 +316,8 @@ function App() {
                 openWindows={openWindows}
                 onFocus={handleFocusWindow}
                 focusedWindowId={focusedWindowId}
-                onToggleStartMenu={() => {setIsStartMenuOpen(!isStartMenuOpen);
-                }}
+                onToggleStartMenu={() => {setIsStartMenuOpen(!isStartMenuOpen);}}
+                onReorderWindows={handleReorderWindows}
             />
             <div onClick={(e) => e.stopPropagation()}>
                 <StartMenu

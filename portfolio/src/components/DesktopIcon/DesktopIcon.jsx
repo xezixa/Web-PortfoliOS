@@ -5,7 +5,6 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
 
     const handleClick = (e) => {
         e.stopPropagation();
-        // We removed onSelect(id) from here because it is now handled the instant you click down!
     };
 
     const handleDoubleClick = (e) => {
@@ -14,15 +13,11 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
     };
 
     const handleMouseDown = (e) => {
-        // CRITICAL: This stops the click from passing through to the Desktop background
         e.stopPropagation();
 
-        // e.button === 0 ensures this ONLY triggers on a Left Click
         if (e.button === 0) {
-            // 1. Instantly select the icon the millisecond the mouse button is pressed
             onSelect(id);
 
-            // 2. Begin the drag logic immediately
             if (onDragStart) {
                 onDragStart(id, e.clientX, e.clientY);
             }
