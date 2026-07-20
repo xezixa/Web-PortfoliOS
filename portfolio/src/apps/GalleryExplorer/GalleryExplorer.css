@@ -251,6 +251,10 @@
     font-family: 'Tahoma', sans-serif;
     font-size: 11px;
 }
+.address-input-wrapper:focus-within {
+    border: 1.45px solid #316ac5; 
+}
+
 
 .address-go-btn {
     display: flex;
@@ -543,4 +547,95 @@
     margin-right: 4px;
     object-fit: contain;
 }
+.search-companion-pane {
+    width: 200px;
+    background: linear-gradient(to bottom, #7ba2e7 0%, #638ce0 100%);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    border-right: 1px solid #648ce1;
+}
 
+.search-criteria-box {
+    background-color: white;
+    border: 1px solid #1c3682;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.search-criteria-box::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid white;
+    border-right: 15px solid transparent;
+    filter: drop-shadow(-1px 1px 0px #1c3682);
+}
+
+.search-title {
+    font-weight: bold;
+    color: #000;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 11px;
+}
+
+.search-label {
+    display: block;
+    margin-bottom: 2px;
+    color: #000;
+    font-size: 11px;
+}
+
+.search-input, .search-dropdown {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #7f9db9;
+    padding: 3px;
+    margin-bottom: 10px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+}
+
+.search-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.search-btn {
+    background: linear-gradient(to bottom, #f2f2f2 0%, #ebebeb 50%, #dddddd 51%, #cfcfcf 100%);
+    border: 1px solid #003c74;
+    border-radius: 3px;
+    padding: 3px 12px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    color: #000;
+}
+
+.search-btn:hover {
+    background: linear-gradient(to bottom, #e3f0fe 0%, #c4defb 50%, #a9d0f9 51%, #88bdf6 100%);
+    border-color: #003c74;
+}
+
+.search-btn:active {
+    background: linear-gradient(to bottom, #98bfe8 0%, #7db0e2 50%, #68a4de 51%, #5a9bda 100%);
+}
+
+.rover-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: auto;
+    min-height: 120px;
+}

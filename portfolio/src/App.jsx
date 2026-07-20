@@ -323,6 +323,7 @@ function App() {
                 <StartMenu
                     isOpen={isStartMenuOpen}
                     onClose={() => setIsStartMenuOpen(false)}
+                    onOpenWindow={handleOpenWindow}
                 />
             </div>
         </div>

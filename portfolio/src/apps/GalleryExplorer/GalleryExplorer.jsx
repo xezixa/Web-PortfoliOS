@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './GalleryExplorer.css';
 import { photoAlbums } from '../../data/photoData';
 import PhotoViewer from '../PhotoViewer/PhotoViewer';
+import RoverAssistant from '../GalleryExplorer/Rover/RoverAssistant';
 
 function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
     const [history, setHistory] = useState([null]);
@@ -10,6 +11,9 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
     const [collapsed, setCollapsed] = useState({tasks: false, cameras: true, lenses: true, software: true});
     const [selectedId, setSelectedId] = useState(null);
 
+    const [isSearching, setIsSearching] = useState(false);
+    const [roverState, setRoverState] = useState('look');
+    
     const currentAlbumId = history[currentIndex];
     const currentAlbum = photoAlbums.find(a => a.id === currentAlbumId);
 
@@ -54,6 +58,25 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
         })
     }
     
+    const toggleSearch = () => {
+        setIsSearching(!isSearching);
+        if (!isSearching) {
+            setRoverState('look');
+        }
+    };
+    
+    const handleDoSearch = () => {
+        setRoverState('read');
+        
+        setTimeout(() => {
+            setRoverState('hyped');
+            
+            setTimeout(() => {
+                setRoverState('blink');
+            }, 5000);
+        }, 3000);
+    };
+
     return (
         <div className="explorer-container">
             <div className="explorer-menu-bar">
@@ -70,7 +93,7 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
 
                     <button className={`toolbar-btn ${currentIndex === history.length - 1 ? 'disabled' : ''}`}
                             onClick={handleForward}>
-                       <img src="/ExplorerIcons/Forward.png" alt="Forward" className="nav-icon-img" />
+                        <img src="/ExplorerIcons/Forward.png" alt="Forward" className="nav-icon-img" />
                         <div className="css-dropdown-arrow"></div>
                     </button>
                     <button
@@ -85,7 +108,12 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                     </button>
                 </div>
                 <div className="toolbar-divider"></div>
-                <button className="toolbar-btn">
+
+                <button
+                    className="toolbar-btn"
+                    onClick={toggleSearch}
+                    style={isSearching ? { backgroundColor: '#c1d2ee', border: '1px solid #316ac5' } : {}}
+                >
                     <img src="/ExplorerIcons/search_ico.png" alt="Search"/>
                     <span>Search</span>
                 </button>
@@ -112,69 +140,95 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
 
                 </div>
                 <button className="address-go-btn">
-                    {/* The green native box */}
                     <img src="/ExplorerIcons/Go.png" alt="Go" className="go-icon-img" />
                 </button>
                 <span>Go</span>
             </div>
 
             <div className="explorer-body">
-                <div className="explorer-sidebar">
-                    {[
-                        {
-                            id: 'tasks',
-                            title: 'Picture Tasks',
-                            content: [
-                                {name: 'Order prints online', url: 'https://google.com'},
-                                {name: 'View slideshow'},
-                            ]
-                        },
-                        
-                        {
-                            id: 'cameras',
-                            title: 'Cameras Used',
-                            content: [
-                                {name: 'Canon G1 X Mark III', url: 'https://www.usa.canon.com/support/p/powershot-g1-x-mark-iii'},
-                                {name: 'Canon EOS Rebel T5i', url: 'https://www.canon.ca/en/product?name=EOS_Rebel_T5i&category=/en/products/Cameras/DSLR-Cameras/Entry-level'},
-                                {name: 'DJI Osmo Action 4', url: 'https://www.dji.com/osmo-action-4'},
-                                {name: 'Pentax K1000', url: 'https://google.com/'},
-                                {name: 'Minolta SRT 101', url: 'https://google.com/'},
-                            ]
-                        },
-                        
-                        {id: 'lenses', title: 'Lenses and Gear', content: ['Canon EF 50mm f/1.8 STM', 'Canon EF-S 24mm f/2.8 STM', 'Minolta Rokkor 50mm f/1.4 PG','Minolta Rokkor 135mm f/2.8 PF']},
-                        {id: 'software', title: 'Editing Tools', content: ['Adobe Lightroom', 'Adobe Photoshop', 'Audacity']}
-                    ].map(group => (
-                        <div className="sidebar-group" key={group.id}>
-                            <div className="sidebar-header"
-                                 onClick={() => setCollapsed(p => ({...p, [group.id]: !p[group.id]}))}>
-                                <span>{group.title}</span>
-                                <div className={`gallery-collapse-btn ${collapsed[group.id] ? 'collapsed' : ''}`}>
-                                </div>
-                            </div>
-                            {!collapsed[group.id] && (
-                                <div className="sidebar-content">
-                                    <ul>{group.content.map((item, i) => (
-                                        <li key={i}>
-                                            {typeof item === 'object' ? (
-                                                <a href={item.url} target="_blank" rel="noopener noreferrer" className="sidebar-link">
-                                                    {item.name}
-                                                </a>
-                                            ) : (
-                                                item
-                                            )}
-                                            </li>
-                                    ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
 
-                <div className="explorer-grid"
-                     onClick={() => setSelectedId(null)}
-                >
+                {isSearching ? (
+                    <div className="search-companion-pane">
+                        <div className="search-criteria-box">
+                            <p className="search-title">Search by any or all of the criteria below.</p>
+
+                            <label className="search-label">All or part of the file name:</label>
+                            <input type="text" className="search-input" />
+
+                            <label className="search-label">A word or phrase in the file:</label>
+                            <input type="text" className="search-input" />
+
+                            <label className="search-label">Look in:</label>
+                            <select className="search-dropdown">
+                                <option>My Pictures</option>
+                                <option>Local Hard Drives (C:)</option>
+                                <option>My Documents</option>
+                            </select>
+
+                            <div className="search-action-buttons">
+                                <button className="search-btn" onClick={toggleSearch}>Cancel</button>
+                                <button className="search-btn" onClick={handleDoSearch}>Search</button>
+                            </div>
+                        </div>
+
+                        <div className="rover-container">
+                            <RoverAssistant currentState={roverState} />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="explorer-sidebar">
+                        {[
+                            {
+                                id: 'tasks',
+                                title: 'Picture Tasks',
+                                content: [
+                                    {name: 'Order prints online', url: 'https://google.com'},
+                                    {name: 'View slideshow'},
+                                ]
+                            },
+                            {
+                                id: 'cameras',
+                                title: 'Cameras Used',
+                                content: [
+                                    {name: 'Canon G1 X Mark III', url: 'https://www.usa.canon.com/support/p/powershot-g1-x-mark-iii'},
+                                    {name: 'Canon EOS Rebel T5i', url: 'https://www.canon.ca/en/product?name=EOS_Rebel_T5i&category=/en/products/Cameras/DSLR-Cameras/Entry-level'},
+                                    {name: 'DJI Osmo Action 4', url: 'https://www.dji.com/osmo-action-4'},
+                                    {name: 'Pentax K1000', url: 'https://google.com/'},
+                                    {name: 'Minolta SRT 101', url: 'https://google.com/'},
+                                ]
+                            },
+                            {id: 'lenses', title: 'Lenses and Gear', content: ['Canon EF 50mm f/1.8 STM', 'Canon EF-S 24mm f/2.8 STM', 'Minolta Rokkor 50mm f/1.4 PG','Minolta Rokkor 135mm f/2.8 PF']},
+                            {id: 'software', title: 'Editing Tools', content: ['Adobe Lightroom', 'Adobe Photoshop', 'Audacity']}
+                        ].map(group => (
+                            <div className="sidebar-group" key={group.id}>
+                                <div className="sidebar-header"
+                                     onClick={() => setCollapsed(p => ({...p, [group.id]: !p[group.id]}))}>
+                                    <span>{group.title}</span>
+                                    <div className={`gallery-collapse-btn ${collapsed[group.id] ? 'collapsed' : ''}`}>
+                                    </div>
+                                </div>
+                                {!collapsed[group.id] && (
+                                    <div className="sidebar-content">
+                                        <ul>{group.content.map((item, i) => (
+                                            <li key={i}>
+                                                {typeof item === 'object' ? (
+                                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="sidebar-link">
+                                                        {item.name}
+                                                    </a>
+                                                ) : (
+                                                    item
+                                                )}
+                                            </li>
+                                        ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <div className="explorer-grid" onClick={() => setSelectedId(null)}>
                     {!currentAlbumId ? (
                         photoAlbums.map(album => (
                             <div key={album.id}
@@ -200,24 +254,28 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                         ))
                     ) : (
                         currentAlbum.photos.map(photo => (
-                            <div key={photo.id} className="explorer-item photo-item"
-                                 onDoubleClick={() => openPhotoViewer(photo)}>
+                            <div key={photo.id}
+                                 className={`explorer-item photo-item ${selectedId === photo.id ? 'selected' : ''}`}
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     setSelectedId(photo.id);
+                                 }}
+                                 onDoubleClick={() => openPhotoViewer(photo)}
+                            >
                                 <div className="photo-thumbnail"><img src={photo.thumb} alt="thumbnail"/></div>
                                 <span className="item-label">{photo.id}.jpg</span>
                             </div>
                         ))
                     )}
-
-                    
                 </div>
             </div>
         </div>
-);
+    );
 }
 
 GalleryExplorer.propTypes = {
     onOpenWindow: PropTypes.func,
-    onSetWallpaper: PropTypes.func 
+    onSetWallpaper: PropTypes.func
 };
 
 export default GalleryExplorer;
