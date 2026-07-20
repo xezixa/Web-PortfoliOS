@@ -26,7 +26,7 @@
     margin-left: 0;
     padding-left: 6px;
     padding-right: 16px;
-    cursor: pointer;
+    cursor: inherit !important;
     display: flex;
     align-items: center;
     justify-content: center;

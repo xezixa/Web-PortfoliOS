@@ -36,13 +36,13 @@
 .toolbar-btn.disabled .css-dropdown-arrow {
     border-top-color: #808080;
 }
+.address-go-btn:hover .go-icon-img {
+    filter: brightness(1.15);
+}
 
-
-.address-go-btn:hover {
-    background: radial-gradient(circle at 30% 30%, #5ded66, #1cb926 70%, #128218);}
-.address-go-btn:active {
-    background: #179920;
-    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.6);
+.address-go-btn:active .go-icon-img {
+    filter: brightness(0.9);
+    transform: translateY(1px) translateX(1px);
 }
 
 .sidebar-header {
@@ -131,14 +131,15 @@
 
 .explorer-toolbar {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     padding: 2px 4px;
     border-bottom: 1px solid #d4d0c8;
+    height: 40px;
 }
 
 .toolbar-section {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     gap: 2px;
 }
 
@@ -146,12 +147,15 @@
     margin-left: auto;
 }
 
-.toolbar-divider {
+.explorer-toolbar-divider {
+    min-width: 1px; 
     width: 1px;
-    height: 30px;
-    background-color: #808080;
+    height: 34px; 
+    opacity: 0.9;
+    background-color: #808090;
     border-right: 1px solid #ffffff;
     margin: 0 6px;
+    align-self: center;
 }
 
 .toolbar-btn {
@@ -160,10 +164,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 6px;
+    padding: 0px 6px;
     border-radius: 3px;
     cursor: pointer;
     color: #000;
+    align-self: stretch;
+    box-sizing: border-box;
 }
 
 .toolbar-btn img {
@@ -172,17 +178,28 @@
 }
 
 .toolbar-btn:hover:not(.disabled) {
-    border: 1px solid #316ac5;
-    background-color: #c1d2ee;
+    border: 1px solid #a3bde3;
+    background-color: #e5eff9;
 }
 
 .toolbar-btn:active:not(.disabled) {
-    background-color: #98b5e2;
+    border: 1px solid #7f9db9;
+    background-color: #d1e2f6;
 }
 
 .toolbar-btn.disabled {
-    opacity: 0.4;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: #808080;
     cursor: default;
+}
+.toolbar-btn.disabled img {
+    filter: grayscale(100%) opacity(40%);
+}
+
+.toolbar-btn.selected {
+    border: 1px solid #7f9db9;
+    background-color: #ffffff;
 }
 
 .explorer-address-bar {
@@ -207,6 +224,7 @@
     border: 1px solid #7f9db9;
     padding: 0 0 0 4px; 
     height: 22px; 
+    position: relative;
 
 }
 .address-dropdown-btn {
@@ -236,6 +254,7 @@
     border-right: 4px solid transparent;
     border-top: 4px solid #000;
     margin-top: 2px;
+    cursor: inherit !important;
 }
 
 .address-icon {
@@ -252,15 +271,58 @@
     font-size: 11px;
 }
 .address-input-wrapper:focus-within {
-    border: 1.45px solid #316ac5; 
+    border: 1.8px solid #316ac5; 
 }
 
+.address-history-dropdown {
+    position: absolute;
+    top: 100%; 
+    left: -1px;
+    width: calc(100% + 2px); 
+    background: #ffffff;
+    border: 1px solid #7f9db9;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    padding: 2px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    gap: 6px;
+    cursor: pointer;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    color: #000;
+}
+
+.history-item img {
+    width: 16px;
+    height: 16px;
+}
+
+.history-item:hover, .history-item.active {
+    background-color: #316ac5;
+    color: #ffffff;
+}
+
+.history-item.indent-1 { padding-left: 16px; }
+.history-item.indent-2 { padding-left: 28px; }
+.history-item.indent-3 { padding-left: 40px; }
+.history-item.indent-4 { padding-left: 52px; }
+.history-item.indent-5 { padding-left: 64px; }
+.history-item.indent-6 { padding-left: 76px; }
 
 .address-go-btn {
     display: flex;
     align-items: center;
     gap: 3px;
-    cursor: pointer;
+    cursor: inherit !important;
     background: transparent;
     border: none;
     color: #000;
@@ -501,12 +563,6 @@
 .explorer-sidebar .collapsed .gallery-arrow-one, .collapsed .gallery-arrow-two {
     transform: rotate(225deg);
 }
-.toolbar-btn.disabled { background: #f0f0f0; }
-
-
-.toolbar-btn.disabled { border-right-color: #f0f0f0; }
-
-.toolbar-btn.disabled { border-left-color: #f0f0f0; }
 
 .fd-selection-overlay {
     position: absolute;

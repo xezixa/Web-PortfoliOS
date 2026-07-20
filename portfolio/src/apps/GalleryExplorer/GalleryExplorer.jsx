@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './GalleryExplorer.css';
 import { photoAlbums } from '../../data/photoData';
@@ -10,6 +10,23 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [collapsed, setCollapsed] = useState({tasks: false, cameras: true, lenses: true, software: true});
     const [selectedId, setSelectedId] = useState(null);
+    
+    const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
+    const addressBarRef = useRef(null);
+    
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (addressBarRef.current && !addressBarRef.current.contains(event.target)) {
+                setIsAddressDropdownOpen(false);
+            }
+        };
+        if (isAddressDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isAddressDropdownOpen]);
 
     const [isSearching, setIsSearching] = useState(false);
     const [roverState, setRoverState] = useState('look');
@@ -107,12 +124,11 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                         />
                     </button>
                 </div>
-                <div className="toolbar-divider"></div>
+                <div className="explorer-toolbar-divider"></div>
 
                 <button
-                    className="toolbar-btn"
+                    className={`toolbar-btn ${isSearching ? 'selected' : ''}`}
                     onClick={toggleSearch}
-                    style={isSearching ? { backgroundColor: '#c1d2ee', border: '1px solid #316ac5' } : {}}
                 >
                     <img src="/ExplorerIcons/search_ico.png" alt="Search"/>
                     <span>Search</span>
@@ -122,7 +138,7 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                     <img src="/ExplorerIcons/doublefolder.png" alt="Folders"/>
                     <span>Folders</span>
                 </button>
-                <div className="toolbar-divider"></div>
+                <div className="explorer-toolbar-divider"></div>
                 <button className="toolbar-btn" style={{padding: '4px 4px'}}>
                     <img src="/ExplorerIcons/idk_ico.png" alt="Views" style={{width: 28, height: 28}}/>
                     <div className="css-dropdown-arrow"></div>
@@ -131,14 +147,59 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
 
             <div className="explorer-address-bar">
                 <span className="address-label">Address</span>
-                <div className="address-input-wrapper">
+                <div className="address-input-wrapper" ref={addressBarRef}>
                     <img src="/ExplorerIcons/explorer_ico.png" alt="" className="address-icon"/>
                     <input type="text" value={currentPath} readOnly className="address-input"/>
-                    <div className="address-dropdown-btn">
+
+                    <div
+                        className="address-dropdown-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsAddressDropdownOpen(!isAddressDropdownOpen);
+                        }}
+                    >
                         <div className="address-dropdown-arrow"></div>
                     </div>
 
+                    {isAddressDropdownOpen && (
+                        <div className="address-history-dropdown">
+                            <div className="history-item">
+                                <img src="/Device-Manager-Icon.png" alt="PC" /> My Computer
+                            </div>
+                            <div className="history-item indent-1">
+                                <img src="/folder.png" alt="Drive" /> Local Disk (C:)
+                            </div>
+                            <div className="history-item indent-2">
+                                <img src="/folder.png" alt="Folder" /> Documents and Settings
+                            </div>
+                            <div className="history-item indent-3">
+                                <img src="/folder.png" alt="Folder" /> CB
+                            </div>
+                            <div className="history-item indent-4">
+                                <img src="/folder.png" alt="Folder" /> My Documents
+                            </div>
+                            <div
+                                className={`history-item indent-5 ${!currentAlbumId ? 'active' : ''}`}
+                                onClick={() => {
+                                    if (currentAlbumId) handleFolderUp();
+                                    setIsAddressDropdownOpen(false);
+                                }}
+                            >
+                                <img src="/folder.png" alt="Folder" /> My Pictures
+                            </div>
+
+                            {currentAlbumId && (
+                                <div
+                                    className="history-item indent-6 active"
+                                    onClick={() => setIsAddressDropdownOpen(false)}
+                                >
+                                    <img src="/folder.png" alt="Folder" /> {currentAlbum.title}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
+
                 <button className="address-go-btn">
                     <img src="/ExplorerIcons/Go.png" alt="Go" className="go-icon-img" />
                 </button>

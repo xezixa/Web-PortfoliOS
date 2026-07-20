@@ -85,6 +85,11 @@ function Desktop({
         if (draggedIcon) return;
 
         const isClickingBackground = e.target === desktopRef.current || e.target.classList.contains('desktop-icons');
+      
+        if (isClickingBackground) {
+            onFocus(null);
+        }
+        
         if (!isClickingBackground) return;
 
         e.preventDefault();
@@ -292,6 +297,7 @@ function Desktop({
                             if (!selectedIconIds.includes(id)) {
                                 setSelectedIconIds([id]);
                             }
+                            onFocus(null);
                         }}
                         onOpen={() => handleIconDoubleClick(icon)}
                         onDragStart={(id, clientX, clientY) => {
@@ -328,6 +334,7 @@ function Desktop({
                         onClose={() => onCloseWindow(win.id)}
                         isActive={win.id === focusedWindowId}
                         onFocus={() => {
+                            setSelectedIconIds([]);
                             onFocus(win.id);
                         }}
                         isFocused={focusedWindowId === win.id}
