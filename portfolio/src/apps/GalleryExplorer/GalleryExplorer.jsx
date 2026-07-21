@@ -4,12 +4,17 @@ import './GalleryExplorer.css';
 import { photoAlbums } from '../../data/photoData';
 import PhotoViewer from '../PhotoViewer/PhotoViewer';
 import RoverAssistant from '../GalleryExplorer/Rover/RoverAssistant';
+import MenuBar from './../../components/MenuBar/MenuBar';
 
 function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
     const [history, setHistory] = useState([null]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [collapsed, setCollapsed] = useState({tasks: false, cameras: true, lenses: true, software: true});
     const [selectedId, setSelectedId] = useState(null);
+    
+    const [viewMode, setViewMode] = useState('thumbnails');
+    const [isViewsDropdownOpen, setIsViewsDropdownOpen] = useState(false);
+    const viewsDropdownRef = useRef(null);
     
     const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
     const addressBarRef = useRef(null);
@@ -19,14 +24,19 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
             if (addressBarRef.current && !addressBarRef.current.contains(event.target)) {
                 setIsAddressDropdownOpen(false);
             }
+
+            if (viewsDropdownRef.current && !viewsDropdownRef.current.contains(event.target)) {
+                setIsViewsDropdownOpen(false);
+            }
         };
-        if (isAddressDropdownOpen) {
+        if (isAddressDropdownOpen || isViewsDropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isAddressDropdownOpen]);
+        
+    }, [isAddressDropdownOpen, isViewsDropdownOpen]);
 
     const [isSearching, setIsSearching] = useState(false);
     const [roverState, setRoverState] = useState('look');
@@ -94,11 +104,86 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
         }, 3000);
     };
 
+    const galleryMenuConfig = [
+        {
+            label: 'File',
+            items: [
+                { label: 'Create Shortcut', disabled: true},
+                { label: 'Delete', disabled: true},
+                { label: 'Rename', disabled: true},
+                { label: 'Properties', disabled: true},
+                { type: 'divider' },
+                { label: 'Close', onClick: () => console.log('Close clicked') }
+            ]
+        },
+        {
+            label: 'Edit',
+            items: [
+                { label: 'Undo', disabled: true},
+                { label: 'Redo', disabled: true},
+                { type: 'divider' },
+                { label: 'Cut', disabled: true},
+                { label: 'Copy', disabled: true},
+                { label: 'Paste', disabled: true},
+                { label: 'Paste Shortcut', disabled: true},
+                { type: 'divider' },
+                { label: 'Select All', disabled: true},
+                { label: 'Invert Selection', disabled: true},
+
+            ]
+        },
+        {
+            label: 'View',
+            items: [
+                { label: 'Toolbars', disabled: true},
+                { label: 'Status Bar', disabled: true },
+                { label: 'Explorer Bar', disabled: true },
+                { type: 'divider' },
+                { label: 'Thumbnails' },
+                { label: 'Tiles' },
+                { label: 'Icons' },
+                { label: 'List' },
+                { label: 'Details' },
+                { type: 'divider' },
+                { label: 'Arrange Icons by...', disabled: true },
+                { type: 'divider' },
+                { label: 'Choose Details...', disabled: true },
+                { label: 'Go To...', disabled: true },
+                { label: 'Refresh', onClick: () => console.log('Refreshing...') }
+            ]
+        },
+        {
+            label: 'Favorites',
+            items: [
+                { label: 'Add to Favorites...', disabled: true },
+                { label: 'Organize Favorites...', disabled: true },
+
+            ]
+        },
+        {
+            label: 'Tools',
+            items: [
+                { label: 'Map Network Drive...', disabled: true },
+                { label: 'Disconnect Network Drive...', disabled: true },
+                { label: 'Synchronize', disabled: true },
+                { type: 'divider' },
+                { label: 'Folder Options...', disabled: true },
+            ]
+        },
+        {
+            label: 'Help',
+            items: [
+                { label: 'Help and Support Center' },
+                { type: 'divider' },
+                { label: 'Is this copy of PortfoliOS legal?' },
+                { label: 'About PortfoliOS' },
+            ]
+        }
+    ];
+    
     return (
         <div className="explorer-container">
-            <div className="explorer-menu-bar">
-                <span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span>F<u>a</u>vorites</span><span><u>T</u>ools</span><span><u>H</u>elp</span>
-            </div>
+            <MenuBar config={galleryMenuConfig} />
 
             <div className="explorer-toolbar">
                 <div className="toolbar-section">
@@ -139,10 +224,38 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                     <span>Folders</span>
                 </button>
                 <div className="explorer-toolbar-divider"></div>
-                <button className="toolbar-btn" style={{padding: '4px 4px'}}>
-                    <img src="/ExplorerIcons/idk_ico.png" alt="Views" style={{width: 28, height: 28}}/>
-                    <div className="css-dropdown-arrow"></div>
-                </button>
+
+                <div className="toolbar-btn-wrapper" ref={viewsDropdownRef} style={{ position: 'relative' }}>
+                    <button
+                        className="toolbar-btn"
+                        style={{padding: '4px 4px'}}
+                        onClick={() => setIsViewsDropdownOpen(!isViewsDropdownOpen)}
+                    >
+                        <img src="/ExplorerIcons/idk_ico.png" alt="Views" style={{width: 28, height: 28}}/>
+                        <div className="css-dropdown-arrow"></div>
+                    </button>
+
+                    {isViewsDropdownOpen && (
+                        <div className="views-dropdown">
+                            <div className="view-option" onClick={() => {setViewMode('thumbnails'); setIsViewsDropdownOpen(false)}}>
+                                <span className="view-check">{viewMode === 'thumbnails' ? '•' : ''}</span> Thumbnails
+                            </div>
+                            <div className="view-option" onClick={() => {setViewMode('tiles'); setIsViewsDropdownOpen(false)}}>
+                                <span className="view-check">{viewMode === 'tiles' ? '•' : ''}</span> Tiles
+                            </div>
+                            <div className="view-option" onClick={() => {setViewMode('icons'); setIsViewsDropdownOpen(false)}}>
+                                <span className="view-check">{viewMode === 'icons' ? '•' : ''}</span> Icons
+                            </div>
+                            <div className="view-option" onClick={() => {setViewMode('list'); setIsViewsDropdownOpen(false)}}>
+                                <span className="view-check">{viewMode === 'list' ? '•' : ''}</span> List
+                            </div>
+                            <div className="menu-divider" style={{margin: '3px 2px'}}></div>
+                            <div className="view-option disabled">
+                                <span className="view-check"></span> Details
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="explorer-address-bar">
@@ -156,6 +269,7 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsAddressDropdownOpen(!isAddressDropdownOpen);
+                            setIsViewsDropdownOpen(false);
                         }}
                     >
                         <div className="address-dropdown-arrow"></div>
@@ -289,7 +403,7 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                     </div>
                 )}
 
-                <div className="explorer-grid" onClick={() => setSelectedId(null)}>
+                <div className={`explorer-grid explorer-view-${viewMode}`} onClick={() => setSelectedId(null)}>
                     {!currentAlbumId ? (
                         photoAlbums.map(album => (
                             <div key={album.id}
@@ -297,20 +411,31 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                                  onClick={(e) => {
                                      e.stopPropagation();
                                      setSelectedId(album.id);
+                                     setIsViewsDropdownOpen(false);
+                                     
                                  }}
                                  onDoubleClick={() => handleNavigate(album.id)}
                             >
-                                <div className="custom-folder-container">
-                                    <div className="fd-selection-overlay"></div>
-                                    <img src="/ExplorerIcons/folder_ico.png" alt="folder" className="base-folder-img"/>
-                                    <div className="folder-photos-grid">
-                                        {album.photos.slice(0, 4).map((p, i) => (
-                                            <div key={i} className="folder-preview-img"
-                                                 style={{backgroundImage: `url(${p.thumb})`}}></div>
-                                        ))}
+                                {viewMode === 'thumbnails' ? (
+                                    <div className="custom-folder-container">
+                                        <div className="fd-selection-overlay"></div>
+                                        <img src="/ExplorerIcons/folder_ico.png" alt="folder" className="base-folder-img"/>
+                                        <div className="folder-photos-grid">
+                                            {album.photos.slice(0, 4).map((p, i) => (
+                                                <div key={i} className="folder-preview-img" style={{backgroundImage: `url(${p.thumb})`}}></div>
+                                            ))}
+                                        </div>
                                     </div>
+                                ) : (
+                                    <div className="view-icon-container">
+                                        <img src="/ExplorerIcons/folder_ico.png" alt="folder" className={`view-icon-${viewMode}`} />
+                                    </div>
+                                )}
+
+                                <div className="item-label-container">
+                                    <span className="item-label">{album.title}</span>
+                                    {viewMode === 'tiles' && <span className="item-subtext">File Folder</span>}
                                 </div>
-                                <span className="item-label">{album.title}</span>
                             </div>
                         ))
                     ) : (
@@ -320,16 +445,31 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                                  onClick={(e) => {
                                      e.stopPropagation();
                                      setSelectedId(photo.id);
+                                     setIsViewsDropdownOpen(false);
                                  }}
                                  onDoubleClick={() => openPhotoViewer(photo)}
                             >
-                                <div className="photo-thumbnail"><img src={photo.thumb} alt="thumbnail"/></div>
-                                <span className="item-label">{photo.id}.jpg</span>
+                                {viewMode === 'thumbnails' ? (
+                                    <div className="photo-thumbnail"><img src={photo.thumb} alt="thumbnail"/></div>
+                                ) : (
+                                    <div className="view-icon-container">
+                                        <img
+                                            src={photo.thumb}
+                                            alt="file"
+                                            className={`view-icon-${viewMode} mini-photo-border`}
+                                        />
+                                    </div>
+                                )}
+
+                                <div className="item-label-container">
+                                    <span className="item-label">{photo.id}.jpg</span>
+                                    {viewMode === 'tiles' && <span className="item-subtext">JPEG Image</span>}
+                                </div>
                             </div>
                         ))
                     )}
                 </div>
-            </div>
+            </div>       
         </div>
     );
 }

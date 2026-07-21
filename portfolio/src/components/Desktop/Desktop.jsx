@@ -7,6 +7,7 @@ import PortfolioAppContent from "../../apps/PortfolioApp/PortfolioAppContent.jsx
 import GalleryExplorer from "../../apps/GalleryExplorer/GalleryExplorer.jsx";
 import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
 import DeviceMgr from "../../apps/DeviceMgr/DeviceMgr.jsx";
+import { useContextMenu } from '../ContextMenu/ContextMenuContext.jsx'
 
 function Desktop({
                      currentWallpaper,
@@ -21,6 +22,20 @@ function Desktop({
                      focusedWindowId,
                      children
                  }) {
+    
+    const { showContextMenu } = useContextMenu();
+
+    const desktopMenu = [
+        { label: 'Arrange Icons By', disabled: true },
+        { label: 'Refresh', onClick: () => console.log('Desktop Refreshed!') },
+        { type: 'divider' },
+        { label: 'Paste', disabled: true },
+        { label: 'Paste Shortcut', disabled: true },
+        { type: 'divider' },
+        { label: 'New', disabled: true },
+        { type: 'divider' },
+        { label: 'Properties', disabled: true }
+    ];
 
     const [icons, setIcons] = useState(() =>
         initialIcons.map((icon, index) => {
@@ -280,6 +295,11 @@ function Desktop({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onContextMenu={(e) => {
+                if (e.target === desktopRef.current || e.target.classList.contains('desktop-icons')) {
+                    showContextMenu(e, desktopMenu);
+                }
+            }} 
         >
             <div className="desktop-selection-box" style={getSelectionStyle()} />
 

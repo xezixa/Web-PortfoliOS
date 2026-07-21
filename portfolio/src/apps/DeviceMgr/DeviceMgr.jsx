@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './DeviceMgr.css';
 import { techTree } from '../../data/techData';
+import MenuBar from './../../components/menuBar/menuBar';
+
 
 function DeviceMgr({ onOpenWindow, onCloseWindow}) {
     const [expandedNodes, setExpandedNodes] = useState([]);
@@ -38,11 +40,54 @@ function DeviceMgr({ onOpenWindow, onCloseWindow}) {
         }
     };
 
+    const galleryMenuConfig = [
+        {
+            label: '&File',
+            items: [
+                { label: 'Options...', disabled: true},
+                { type: 'divider' },
+                { label: 'Exit', onClick: () => console.log('Close clicked') }
+            ]
+        },
+        {
+            label: '&Action',
+            items: [
+                {label: 'Help', disabled: true},
+            ]
+        },
+        {
+            label: '&View',
+            items: [
+                { label: 'Devices by type' },
+                { label: 'Devices by connection' },
+                { label: 'Devices by container' },
+                { label: 'Devices by driver' },
+                { label: 'Drivers by type' },
+                { label: 'Drivers by device' },
+                { label: 'Resources by type' },
+                { label: 'Resources by connection' },
+                { type: 'divider' },
+                { label: 'Show hidden devices' },
+                { type: 'divider' },
+                { label: 'Customize...' },
+            ]
+        },
+        {
+            label: '&Help',
+            items: [
+                { label: 'Help Topics' },
+                { label: 'TechCenter Web Site' },
+                { type: 'divider' },
+                { label: 'About Experience' },
+                { label: 'About Device Manager' },
+            ]
+        },
+    ];
+
     return (
         <div className="devicemgr-container">
-            <div className="devicemgr-menu-bar">
-                <span><u>F</u>ile</span><span><u>A</u>ction</span><span><u>V</u>iew</span><span><u>H</u>elp</span>
-            </div>
+            <MenuBar config={galleryMenuConfig} />
+
 
             <div className="devicemgr-toolbar">
                 <button className="toolbar-icon-btn"><img src="/DevmgmtIcons/dev-left.svg" alt="Back"/></button>
@@ -58,9 +103,8 @@ function DeviceMgr({ onOpenWindow, onCloseWindow}) {
                 </button>
             </div>
 
-            <div className="devicemgr-tree-area">
+            <div className="devicemgr-tree-area" onClick={() => setSelectedId(null)}>
                 <div className="tree-root">
-                    {/* Wrap everything in a main list so the root gets lines and boxes */}
                     <ul className="tree-list">
                         <li className="tree-category-node">
                             <div className="tree-row" onClick={() => setIsRootExpanded(!isRootExpanded)}>
@@ -71,7 +115,6 @@ function DeviceMgr({ onOpenWindow, onCloseWindow}) {
                                 <span className="tree-label bold">TECHNOLOGY</span>
                             </div>
 
-                            {/* Render children only if root is expanded */}
                             {isRootExpanded && (
                                 <ul className="tree-sub-list">
                                     {techTree.map((category) => {
@@ -122,6 +165,82 @@ function DeviceMgr({ onOpenWindow, onCloseWindow}) {
                         </li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+function TechProperties({ item, onClose }) {
+    const [activeTab, setActiveTab] = useState('General');
+
+    return (
+        <div className="xp-properties-container">
+            <div className="xp-tabs-row">
+                <div
+                    className={`xp-tab ${activeTab === 'General' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('General')}
+                >
+                    General
+                </div>
+                <div
+                    className={`xp-tab ${activeTab === 'Driver' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('Driver')}
+                >
+                    Details
+                </div>
+            </div>
+
+            <div className="xp-tab-body">
+                {activeTab === 'General' && (
+                    <>
+                        <div className="prop-top-section">
+                            <img src={item.icon || "/ExplorerIcons/file_ico.png"} alt="" className="prop-main-icon" />
+                            <span className="prop-name">{item.name}</span>
+                        </div>
+                        <hr className="xp-divider" />
+
+                        <div className="prop-info-grid">
+                            <span className="prop-label">Device type:</span>
+                            <span>{item.type || 'Standard Device'}</span>
+                            <span className="prop-label">Manufacturer:</span>
+                            <span>{item.manufacturer || 'Unknown'}</span>
+                            <span className="prop-label">Location:</span>
+                            <span>{item.location || 'Location 0'}</span>
+                        </div>
+                        <hr className="xp-divider" />
+
+                        <div className="device-status-box">
+                            <div className="status-label">Device status</div>
+                            <div className="status-textarea">
+                                This device is working properly.
+                                <br /><br />
+                                If you are having problems with this device, click Troubleshoot to start the troubleshooter.
+                            </div>
+                            <div className="device-troubleshoot-area">
+                                <button className="xp-button">Troubleshoot...</button>
+                            </div>
+                        </div>
+
+                        <div className="device-usage-section">
+                            <span className="prop-label">Device usage:</span>
+                            <select className="xp-select">
+                                <option>Use this device (enable)</option>
+                                <option>Do not use this device (disable)</option>
+                            </select>
+                        </div>
+                    </>
+                )}
+
+                {activeTab === 'Driver' && (
+                    <div>
+                        <p style={{marginTop: 0}}>No additional details are available for this device.</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="xp-properties-footer">
+                <button className="xp-button" onClick={onClose}>OK</button>
+                <button className="xp-button" onClick={onClose}>Cancel</button>
             </div>
         </div>
     );

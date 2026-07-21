@@ -1,0 +1,15 @@
+.context-menu {
+    position: fixed;
+    background-color: #ffffff;
+    border: 1px solid #ACA899;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    min-width: 120px; 
+    display: block;
+    padding: 2px 0;
+    z-index: 99999;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+}

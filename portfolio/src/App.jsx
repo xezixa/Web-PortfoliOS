@@ -5,7 +5,7 @@ import StartMenu from './components/StartMenu/StartMenu';
 import './components/animations.css';
 import { initialIcons } from './data/desktopIcons';
 import PhotoViewer from './apps/PhotoViewer/PhotoViewer';
-import DeviceMgr from './apps/DeviceMgr/DeviceMgr';
+import { ContextMenuProvider } from './components/ContextMenu/ContextMenuContext.jsx'
 
 function App() {
     const [minimizedWindows, setMinimizedWindows] = useState([]);
@@ -288,6 +288,7 @@ function App() {
     };
 
     return (
+        <ContextMenuProvider>
         <div className="os-root" style={{ position: 'relative', height: '100vh', width: '100vw', overflow: 'hidden' }}
              onClick={(e) => {
                  if (e.target.className === 'os-root' && isStartMenuOpen) {
@@ -327,6 +328,7 @@ function App() {
                 />
             </div>
         </div>
+        </ContextMenuProvider>
     );
 }
 

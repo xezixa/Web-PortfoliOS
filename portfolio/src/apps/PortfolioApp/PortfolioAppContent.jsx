@@ -3,6 +3,7 @@ import './PortfolioAppContent.css';
 import ContactForm from './ContactForm';
 import AboutSect from './AboutSect';
 import ResumeView from "./ResumeView.jsx";
+import MenuBar from './../../components/menuBar/menuBar';
 
 function PortfolioAppContent({ onOpenWindow }) {
 
@@ -53,13 +54,56 @@ function PortfolioAppContent({ onOpenWindow }) {
                 showHelp: false
             });
         }
-    }; 
+    };
 
+    const galleryMenuConfig = [
+        {
+            label: '&File',
+            items: [
+                { label: 'Options...', disabled: true},
+                { type: 'divider' },
+                { label: 'Exit', onClick: () => console.log('Close clicked') }
+            ]
+        },
+        {
+            label: '&Edit',
+            items: [
+                {label: 'Undo', disabled: true},
+                {label: 'Redo', disabled: true},
+                {type: 'divider'},
+                {label: 'Cut', disabled: true},
+                {label: 'Copy', disabled: true},
+                {label: 'Paste', disabled: true},
+                {label: 'Paste Shortcut', disabled: true},
+                {type: 'divider'},
+                {label: 'Select All', disabled: true},
+                {label: 'Invert Selection', disabled: true},
+
+            ]
+        },
+        {
+            label: '&Search',
+            items: [
+                { label: 'Help and Support Center' },
+                { type: 'divider' },
+                { label: 'Is this copy of PortfoliOS legal?' },
+                { label: 'About PortfoliOS' },
+            ]
+        },
+        {
+            label: '&Help',
+            items: [
+                { label: 'Help and Support Center' },
+                { type: 'divider' },
+                { label: 'Is this copy of PortfoliOS legal?' },
+                { label: 'About PortfoliOS' },
+            ]
+        },
+    ];
+    
     return (
         <div className="portfolio-app-container">
-            <div className="portfolio-menu-bar">
-                <span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span>
-            </div>
+            <MenuBar config={galleryMenuConfig} />
 
             <div className="portfolio-workspace">
                 <h1 className="portfolio-heading">

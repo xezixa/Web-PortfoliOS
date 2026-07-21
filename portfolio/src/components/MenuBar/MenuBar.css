@@ -1,0 +1,73 @@
+.os-menu-bar {
+    display: flex;
+    padding: 2px 8px;
+    background-color: #ece9d8;
+    border-bottom: 1px solid #d4d0c8;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    color: #000;
+    user-select: none;
+    cursor: inherit !important;
+}
+
+.menu-bar-item-container {
+    position: relative;
+}
+
+.menu-bar-label {
+    padding: 3px 6px;
+    cursor: default;
+    margin-right: 2px;
+    border-radius: 2px;
+}
+
+.menu-bar-label:hover,
+.menu-bar-label.active {
+    background-color: #316ac5;
+    color: #fff;
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #ACA899;
+    box-shadow: 3px 3px 4px rgba(0,0,0,0.25);
+    
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
+    
+    min-width: 160px;
+    
+    display: block;
+    flex-direction: column;
+    padding: 2px 0;
+    z-index: 9999;
+}
+
+.menu-option {
+    padding: 3px 20px 3px 24px;
+    cursor: default !important;
+    color: #000;
+    white-space: nowrap !important;
+    display: block;
+}
+
+.menu-option:hover:not(.disabled) {
+    background-color: #316ac5;
+    color: #fff;
+}
+
+.menu-option.disabled {
+    color: #808080;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.menu-divider {
+    height: 0;
+    border-top: 1px solid #aca899;
+    border-bottom: 1px solid #fff;
+    margin: 3px 2px;
+}
