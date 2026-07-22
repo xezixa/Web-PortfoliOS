@@ -113,8 +113,14 @@ const StartMenu = ({ isOpen, onClose, onOpenWindow }) => {
         {
             label: 'System Properties',
             icon: '/SysProperties.png',
-            action: () => handleAppLaunch({ id: 'system_properties', title: 'System Properties', width: 450, height: 500, iconSrc: '/SysProperties.png', content: <div style={{ padding: '20px', fontFamily: 'Tahoma' }}>System Information coming soon.</div> })
-        },
+            action: () => handleAppLaunch({
+                id: 'sysprop_app',
+                title: 'System Properties',
+                width: 370,
+                height: 500,
+                iconSrc: '/SysProperties.png'
+            })
+        }
     ];
 
     return (

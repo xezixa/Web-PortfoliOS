@@ -3,7 +3,7 @@ import './PortfolioAppContent.css';
 import ContactForm from './ContactForm';
 import AboutSect from './AboutSect';
 import ResumeView from "./ResumeView.jsx";
-import MenuBar from './../../components/menuBar/menuBar';
+import MenuBar from './../../components/MenuBar/MenuBar';
 
 function PortfolioAppContent({ onOpenWindow }) {
 

@@ -6,6 +6,7 @@ import './components/animations.css';
 import { initialIcons } from './data/desktopIcons';
 import PhotoViewer from './apps/PhotoViewer/PhotoViewer';
 import { ContextMenuProvider } from './components/ContextMenu/ContextMenuContext.jsx'
+import SysProp from './apps/SysProp/SysProp';
 
 function App() {
     const [minimizedWindows, setMinimizedWindows] = useState([]);
@@ -36,6 +37,7 @@ function App() {
         if (rawId === 'pdfview.exe') return 'resume-app';
         if (rawId === 'Photography' || rawId === 'photography' || rawId === 'gallery') return 'gallery_app';
         if (rawId === 'Technology' || rawId === 'technology' || rawId === 'technology_app') return 'technology_app';
+        if (rawId === 'system_properties') return 'sysprop_app';
         return rawId;
     };
 
@@ -207,11 +209,13 @@ function App() {
             const isDesktopResume = icon.label === 'pdfview.exe' || icon.id === 'resume-app';
             const isGallery = icon.label === 'Photography' || icon.id === 'gallery_app';
             const isDeviceMgr = icon.label === 'Technology' || icon.id === 'technology_app';
+            const isSysProp = icon.id === 'system_properties';
 
             let effectiveId = icon.id;
             if (isDesktopResume) effectiveId = 'resume-app';
             if (isGallery) effectiveId = 'gallery_app';
             if (isDeviceMgr) effectiveId = 'technology_app';
+            if (isSysProp) effectiveId = 'sysprop_app';
 
             if (openWindows.some(win => win.id === effectiveId)) {
                 if (minimizedWindows.includes(effectiveId)) {
@@ -239,6 +243,9 @@ function App() {
             } else if (isDeviceMgr) {
                 winWidth = 460;
                 winHeight = 600;
+            } else if (effectiveId === 'sysprop_app') {
+                winWidth = 370;
+                winHeight = 500;
             }
 
 
@@ -273,7 +280,7 @@ function App() {
                     {
                         ...icon,
                         id: effectiveId,
-                        title: isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
+                        title: effectiveId === 'sysprop_app' ? 'System Properties' : isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
                         content: icon.content,
                         iconSrc: isGallery ? '/photofolder2.png' : icon.iconSrc,
                         width: winWidth,

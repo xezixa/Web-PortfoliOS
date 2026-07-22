@@ -6,10 +6,45 @@
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
-    min-width: 120px; 
+    min-width: 170px; 
     display: block;
     padding: 2px 0;
     z-index: 99999;
     font-family: 'Tahoma', sans-serif;
     font-size: 11px;
+    
+}
+
+.context-menu .menu-option {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 16px 3px 24px;
+    position: relative; 
+}
+
+
+.submenu-arrow {
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #000;
+    margin-left: 12px;
+}
+
+.menu-option.disabled .submenu-arrow {
+    border-left-color: #808080;
+    filter: drop-shadow(1px 1px 0px #fff);
+}
+
+.menu-option:hover:not(.disabled) .submenu-arrow {
+    border-left-color: #fff;
+}
+
+.context-submenu {
+    position: absolute;
+    top: -3px; 
+    left: 100%;
+    margin-left: -2px; 
 }

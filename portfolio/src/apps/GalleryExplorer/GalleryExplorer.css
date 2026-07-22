@@ -603,6 +603,7 @@
 }
 .search-companion-pane {
     width: 200px;
+    flex-shrink: 0;
     background: linear-gradient(to bottom, #7ba2e7 0%, #638ce0 100%);
     padding: 12px;
     display: flex;

@@ -8,6 +8,7 @@ import GalleryExplorer from "../../apps/GalleryExplorer/GalleryExplorer.jsx";
 import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
 import DeviceMgr from "../../apps/DeviceMgr/DeviceMgr.jsx";
 import { useContextMenu } from '../ContextMenu/ContextMenuContext.jsx'
+import SysProp from "../../apps/SysProp/SysProp.jsx";
 
 function Desktop({
                      currentWallpaper,
@@ -26,13 +27,38 @@ function Desktop({
     const { showContextMenu } = useContextMenu();
 
     const desktopMenu = [
-        { label: 'Arrange Icons By', disabled: true },
+        {
+            label: 'Arrange Icons By',
+            subItems: [
+                {label: 'Name', onClick: () => console.log('Sort by Name')},
+                {label: 'Size', onClick: () => console.log('Sort by Size')},
+                {label: 'Type', onClick: () => console.log('Sort by Type')},
+                {label: 'Modified', onClick: () => console.log('Sort by Modified')},
+                {type: 'divider'},
+                {label: 'Auto Arrange', disabled: true},
+                {label: 'Align to Grid', disabled: true}
+            ]
+        },
         { label: 'Refresh', onClick: () => console.log('Desktop Refreshed!') },
         { type: 'divider' },
         { label: 'Paste', disabled: true },
         { label: 'Paste Shortcut', disabled: true },
         { type: 'divider' },
-        { label: 'New', disabled: true },
+        {
+            label: 'New',
+            subItems: [
+                {label: 'Folder', onClick: () => console.log('New Folder')},
+                { type: 'divider' },
+                {label: 'Text Document', onClick: () => console.log('New .txt doc')},
+                {label: 'Rich Text Document', onClick: () => console.log('New Rich txt doc')},
+                {label: 'Bitmap Image', onClick: () => console.log('New Bitmap Image')},
+                { type: 'divider' },
+                {label: 'Upload File', onClick: () => console.log('File upload')},
+
+
+
+            ]
+        },
         { type: 'divider' },
         { label: 'Properties', disabled: true }
     ];
@@ -104,6 +130,8 @@ function Desktop({
         if (isClickingBackground) {
             onFocus(null);
         }
+        
+        if (e.button !== 0) return;
         
         if (!isClickingBackground) return;
 
@@ -387,7 +415,9 @@ function Desktop({
                                 onOpenWindow={onOpenWindow}
                                 onCloseWindow={onCloseWindow}
                             />
-                        ) : (
+                        ) :  win.id === 'sysprop_app' ? (
+                            <SysProp onClose={() => onCloseWindow(win.id)} />
+                            ) : (
                             win.content
                         )}
 

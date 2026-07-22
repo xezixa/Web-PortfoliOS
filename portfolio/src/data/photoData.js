@@ -16,7 +16,13 @@ export const photoAlbums = [
         title: 'Landscapes',
         date: '2024-11-03',
         photos: [
-            { id: 'IMG_5007', url: '/IMG_5007.jpg', thumb: '/IMG_5007.jpg' },
+            { 
+                id: 'IMG_5007',
+                url: '/IMG_5007.jpg',
+                thumb: '/IMG_5007.jpg',
+                caption: 'Test'
+            },
+            
             { id: 'IMG_4542', url: '/IMG_4542.jpg', thumb: '/IMG_4542.jpg' },
             { id: 'IMG_4622', url: '/IMG_4622.jpg', thumb: '/IMG_4622.jpg' },
             { id: 'l4', url: 'https://placehold.co/600x400/16a085/FFF', thumb: 'https://placehold.co/100x100/16a085/FFF' },
