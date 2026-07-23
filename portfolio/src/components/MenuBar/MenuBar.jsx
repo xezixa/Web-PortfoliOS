@@ -1,19 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './MenuBar.css';
+import '../ContextMenu/ContextMenu.css';
 
 export default function MenuBar({ config }) {
     const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+    const [activeSubmenuIndex, setActiveSubmenuIndex] = useState(null);
     const menuRef = useRef(null);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
                 setActiveMenuIndex(null);
+                setActiveSubmenuIndex(null);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+    
+    useEffect(() => {
+        setActiveSubmenuIndex(null);
+    }, [activeMenuIndex]);
 
     const renderLabel = (text) => {
         if (!text) return null;
@@ -30,7 +37,7 @@ export default function MenuBar({ config }) {
     };
 
     return (
-        <div className="os-menu-bar" ref={menuRef} onClick={() => setActiveMenuIndex(null)} >
+        <div className="os-menu-bar" ref={menuRef} onClick={() => {setActiveMenuIndex(null); setActiveSubmenuIndex(null);}} >
             {config.map((menu, index) => (
                 <div
                     key={menu.label}
@@ -49,23 +56,74 @@ export default function MenuBar({ config }) {
 
                     {activeMenuIndex === index && (
                         <div className="menu-dropdown">
-                            {menu.items.map((item, i) => (
-                                item.type === 'divider' ? (
-                                    <div key={i} className="menu-divider" />
-                                ) : (
+                            {menu.items.map((item, i) => {
+                                if (item.type === 'divider') {
+                                    return <div key={i} className="menu-divider" onMouseEnter={() => setActiveSubmenuIndex(null)} />
+                                }
+
+                                const hasSubmenu = item.subItems && item.subItems.length > 0;
+
+                                return (
                                     <div
                                         key={i}
                                         className={`menu-option ${item.disabled ? 'disabled' : ''}`}
-                                        onClick={() => {
-                                            if (item.disabled) return;
+                                        style={{
+                                            position: 'relative',
+                                            ...(hasSubmenu ? { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } : {})
+                                        }}
+                                        onMouseEnter={() => {
+                                            if (!item.disabled && hasSubmenu) {
+                                                setActiveSubmenuIndex(i);
+                                            } else {
+                                                setActiveSubmenuIndex(null);
+                                            }
+                                        }}
+                                        onClick={(e) => {
+                                            if (item.disabled || hasSubmenu) return;
                                             if (item.onClick) item.onClick();
                                             setActiveMenuIndex(null);
+                                            setActiveSubmenuIndex(null);
                                         }}
                                     >
-                                        {renderLabel(item.label)}
+                                        <span>{renderLabel(item.label)}</span>
+
+                                        {hasSubmenu && <div className="submenu-arrow"></div>}
+
+                                        {hasSubmenu && activeSubmenuIndex === i && (
+                                            <div
+                                                className="menu-dropdown"
+                                                style={{
+                                                    position: 'absolute',
+                                                    left: '100%',
+                                                    top: '-3px',
+                                                    marginLeft: '-2px'
+                                                }}
+                                            >
+                                                {item.subItems.map((sub, subIdx) => (
+                                                    sub.type === 'divider' ? (
+                                                        <div key={subIdx} className="menu-divider" />
+                                                    ) : (
+                                                        <div
+                                                            key={subIdx}
+                                                            className={`menu-option ${sub.disabled ? 'disabled' : ''}`}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (!sub.disabled) {
+                                                                    if (sub.onClick) sub.onClick();
+                                                                    setActiveMenuIndex(null);
+                                                                    setActiveSubmenuIndex(null);
+                                                                }
+                                                            }}
+                                                        >
+                                                            {renderLabel(sub.label)}
+                                                        </div>
+                                                    )
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 )
-                            ))}
+                            })}
                         </div>
                     )}
                 </div>

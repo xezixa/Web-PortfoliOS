@@ -1,7 +1,7 @@
 import React from 'react';
 import './DesktopIcon.css';
 
-function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, onDragStart }) {
+function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, onDragStart, isShortcut }) {
 
     const handleClick = (e) => {
         e.stopPropagation();
@@ -46,7 +46,17 @@ function DesktopIcon({ id, label, iconSrc, x, y, isSelected, onSelect, onOpen, o
                     alt={label}
                     className="shortcut-icon-img"
                     draggable="false"/>
-                
+
+                {isShortcut && (
+                    <div className="shortcut-overlay-container">
+                    <img
+                        src="/Shortcut%20overlay.png"
+                        alt="shortcut"
+                        className="shortcut-overlay-img"
+                        draggable="false"
+                        />
+                    </div>
+                )}
             </div>
             <span className="shortcut-label">{label}</span>
         </div>

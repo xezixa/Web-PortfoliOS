@@ -614,8 +614,8 @@
 }
 
 .search-criteria-box {
-    background-color: white;
-    border: 1px solid #1c3682;
+    background-color: #D6Dff7;
+    border: 1px solid white;
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 20px;
@@ -630,9 +630,9 @@
     left: 20px;
     width: 0;
     height: 0;
-    border-top: 15px solid white;
+    border-top: 15px solid #d6dff7;
     border-right: 15px solid transparent;
-    filter: drop-shadow(-1px 1px 0px #1c3682);
+    filter: drop-shadow(-1px 1px 0px white);
 }
 
 .search-title {

@@ -25,6 +25,7 @@
     justify-content: flex-start;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
 }
+
 .start-menu-header h2 {
     margin: 0;
     font-size: 16px;
@@ -40,6 +41,25 @@
 .start-menu-body {
     display: flex;
     min-height: 340px;
+    position: relative;
+}
+
+.start-menu-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+            to right,
+            rgba(223, 94, 7, 0) 0%,
+            #e68b2c 15%,
+            #df5e07 50%,
+            #e68b2c 85%,
+            rgba(223, 94, 7, 0) 100%
+    );
+    z-index: 10;
 }
 
 .menu-left {
@@ -65,13 +85,19 @@
     padding: 4px 10px;
     margin: 1px 4px;
     cursor: pointer;
-    border-radius: 2px;
     border: 1px solid transparent;
 }
 
 .menu-item:hover {
-    background: rgba(49,106,197,0.1);
+    background-color: #2f71cd; 
+    color: #ffffff !important; 
+    cursor: inherit !important;
 }
+
+.menu-item:hover span {
+    color: #fff !important;
+}
+
 
 .menu-left .menu-item span{
     font-size: 11px;

@@ -12,8 +12,8 @@ export function ContextMenuProvider({ children }) {
     });
 
     useEffect(() => {
-        const handleClickOutside = () => {
-            if (contextMenu.visible) {
+        const handleClickOutside = (e) => {
+            if (contextMenu.visible && !e.target.closest('.context-menu')) {
                 setContextMenu(prev => ({ ...prev, visible: false }));
             }
         };

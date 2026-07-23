@@ -127,6 +127,9 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
                 { label: 'Paste', disabled: true},
                 { label: 'Paste Shortcut', disabled: true},
                 { type: 'divider' },
+                { label: 'Copy To Folder...', disabled: true},
+                { label: 'Move To Folder...', disabled: true},
+                { type: 'divider' },
                 { label: 'Select All', disabled: true},
                 { label: 'Invert Selection', disabled: true},
 
@@ -135,19 +138,52 @@ function GalleryExplorer({ onOpenWindow, onSetWallpaper }) {
         {
             label: 'View',
             items: [
-                { label: 'Toolbars', disabled: true},
+                { 
+                    label: 'Toolbars',
+                    subItems: [
+                        { label: 'Standard Buttons' },
+                        { label: 'Address Bar' },
+                        { label: 'Links' },
+                        { type: 'divider' },
+                        { label: 'Lock the Toolbars' },
+                        { label: 'Customize...', disabled: true },
+                    ]
+                },
                 { label: 'Status Bar', disabled: true },
-                { label: 'Explorer Bar', disabled: true },
+                { 
+                    label: 'Explorer Bar',
+                    subItems: [
+                        { label: 'Search' },
+                        { label: 'Favorites' },
+                        { label: 'History' },
+                        { label: 'Folders' },
+                        { type: 'divider' },
+                        { label: 'Tip of the Day' },
+                    ]
+                },
                 { type: 'divider' },
                 { label: 'Thumbnails' },
                 { label: 'Tiles' },
                 { label: 'Icons' },
                 { label: 'List' },
-                { label: 'Details' },
+                { label: 'Details', disabled: true },
                 { type: 'divider' },
-                { label: 'Arrange Icons by...', disabled: true },
+                {
+                    label: 'Arrange Icons by',
+                    subItems: [
+                        {label: 'Name', onClick: () => console.log('Sort by Name')},
+                        {label: 'Type', onClick: () => console.log('Sort by Type')},
+                        {label: 'Total Size', onClick: () => console.log('Sort by Total Size')},
+                        {label: 'Free Space', onClick: () => console.log('Sort by Free Space')},
+                        {label: 'Comments', onClick: () => console.log('Sort by Comments')},
+                        {type: 'divider' },
+                        {label: 'Show in Groups', onClick: () => console.log('Show in Groups')},
+                        {label: 'Auto Arrange', onClick: () => console.log('Auto Arrange')},
+                        {label: 'Align to Grid', onClick: () => console.log('Align to Grid')}
+                    ]
+                },
                 { type: 'divider' },
-                { label: 'Choose Details...', disabled: true },
+                { label: 'Choose Details', disabled: true },
                 { label: 'Go To...', disabled: true },
                 { label: 'Refresh', onClick: () => console.log('Refreshing...') }
             ]

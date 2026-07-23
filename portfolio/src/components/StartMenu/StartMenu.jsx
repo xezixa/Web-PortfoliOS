@@ -118,7 +118,10 @@ const StartMenu = ({ isOpen, onClose, onOpenWindow }) => {
                 title: 'System Properties',
                 width: 370,
                 height: 500,
-                iconSrc: '/SysProperties.png'
+                iconSrc: '/SysProperties.png',
+                showMinimize: false,
+                showMaximize: false,
+                showHelp: true
             })
         }
     ];

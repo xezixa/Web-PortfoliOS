@@ -15,6 +15,7 @@ function App() {
     const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
     const [focusedWindowId, setFocusedWindowId] = useState('portfolio_app');
     const [animatingWindows, setAnimatingWindows] = useState({});
+    const [peekingWindowId, setPeekingWindowId] = useState(null);
     
     const handleOpenPhotoViewer = (photo) => {
         onOpenWindow({
@@ -49,7 +50,7 @@ function App() {
         
         return [{
             id: 'portfolio_app',
-            title: 'portfolio_bezilla.exe',
+            title: 'My Portfolio',
             content: initialIcons.find(icon => icon.id === 'portfolio_app')?.content,
             iconSrc: initialIcons.find(icon => icon.id === 'portfolio_app')?.iconSrc,
             width: 900,
@@ -280,7 +281,7 @@ function App() {
                     {
                         ...icon,
                         id: effectiveId,
-                        title: effectiveId === 'sysprop_app' ? 'System Properties' : isDesktopResume ? 'resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
+                        title: effectiveId === 'sysprop_app' ? 'System Properties' : isDesktopResume ? 'PDF Viewer — resume_chase_bezilla.pdf' : isGallery ? 'My Pictures' : isDeviceMgr ? 'Device Manager' : (icon.title || icon.label),
                         content: icon.content,
                         iconSrc: isGallery ? '/photofolder2.png' : icon.iconSrc,
                         width: winWidth,
@@ -316,6 +317,7 @@ function App() {
                 onFocus={handleFocusWindow}
                 onOpenWindow={handleOpenWindow}
                 onCloseWindow={handleCloseWindow}
+                peekingWindowId={peekingWindowId}
             />
             <Taskbar
                 minimizedWindows={minimizedWindows}
@@ -326,6 +328,7 @@ function App() {
                 focusedWindowId={focusedWindowId}
                 onToggleStartMenu={() => {setIsStartMenuOpen(!isStartMenuOpen);}}
                 onReorderWindows={handleReorderWindows}
+                onPeek={(id) => setPeekingWindowId(id)}
             />
             <div onClick={(e) => e.stopPropagation()}>
                 <StartMenu

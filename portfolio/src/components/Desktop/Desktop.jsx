@@ -20,22 +20,61 @@ function Desktop({
                      onFocus,
                      onOpenWindow,
                      onCloseWindow,
+                     peekingWindowId,
                      focusedWindowId,
                      children
                  }) {
-    
+
     const { showContextMenu } = useContextMenu();
+
+    const [isAutoArrange, setIsAutoArrange] = useState(false);
+    const [icons, setIcons] = useState(() =>
+        initialIcons.map((icon, index) => {
+            if (icon.id === 'portfolio_app') {
+                return { ...icon, x: 10 + (8 * 84), y: 10 + (4 * 84) };
+            }
+            return { ...icon, x: 10, y: 10 + (index * 84) };
+        })
+    );
+    const [selectedIconIds, setSelectedIconIds] = useState([]);
+    const [selection, setSelection] = useState({
+        isSelecting: false, startX: 0, startY: 0, currentX: 0, currentY: 0
+    });
+    const [draggedIcon, setDraggedIcon] = useState(null);
+
+    const arrangeIcons = (method) => {
+        setIcons(prevIcons => {
+            const sorted = [...prevIcons].sort((a, b) => {
+                if (method === 'name') return a.label.localeCompare(b.label);
+                if (method === 'size') return a.label.length - b.label.length;
+                if (method === 'type') return a.iconSrc.localeCompare(b.iconSrc);
+                return 0;
+            });
+            return sorted.map((icon, index) => ({
+                ...icon,
+                x: 10,
+                y: 10 + (index * 84)
+            }));
+        });
+    };
 
     const desktopMenu = [
         {
             label: 'Arrange Icons By',
             subItems: [
-                {label: 'Name', onClick: () => console.log('Sort by Name')},
-                {label: 'Size', onClick: () => console.log('Sort by Size')},
-                {label: 'Type', onClick: () => console.log('Sort by Type')},
-                {label: 'Modified', onClick: () => console.log('Sort by Modified')},
+                {label: 'Name', onClick: () => arrangeIcons('name')},
+                {label: 'Size', onClick: () => arrangeIcons('size')},
+                {label: 'Type', onClick: () => arrangeIcons('type')},
+                {label: 'Modified', disabled: true},
                 {type: 'divider'},
-                {label: 'Auto Arrange', disabled: true},
+                {
+                    label: `${isAutoArrange ? '✓ ' : ''}Auto Arrange`,
+                    onClick: () => {
+                        const newAutoArrange = !isAutoArrange;
+                        setIsAutoArrange(newAutoArrange);
+                        if (newAutoArrange) arrangeIcons('name');
+                    }
+                },
                 {label: 'Align to Grid', disabled: true}
             ]
         },
@@ -54,43 +93,12 @@ function Desktop({
                 {label: 'Bitmap Image', onClick: () => console.log('New Bitmap Image')},
                 { type: 'divider' },
                 {label: 'Upload File', onClick: () => console.log('File upload')},
-
-
-
             ]
         },
         { type: 'divider' },
         { label: 'Properties', disabled: true }
     ];
-
-    const [icons, setIcons] = useState(() =>
-        initialIcons.map((icon, index) => {
-            if (icon.id === 'portfolio_app') {
-                return {
-                    ...icon,
-                    x: 10 + (8 * 84),
-                    y: 10 + (4 * 84)
-                };
-            }
-            return {
-                ...icon,
-                x: 10,
-                y: 10 + (index * 84)
-            };
-        })
-    );
-
-    const [selectedIconIds, setSelectedIconIds] = useState([]);
-
-    const [selection, setSelection] = useState({
-        isSelecting: false,
-        startX: 0,
-        startY: 0,
-        currentX: 0,
-        currentY: 0
-    });
-
-    const [draggedIcon, setDraggedIcon] = useState(null);
+    
     const desktopRef = useRef(null);
     const iconsContainerRef = useRef(null);
     const justFinishedSelecting = useRef(false);
@@ -331,6 +339,19 @@ function Desktop({
         >
             <div className="desktop-selection-box" style={getSelectionStyle()} />
 
+            <style>
+                {`.app-window {
+                transition: opacity 0.2s ease-in-out !important;
+                }
+                ${peekingWindowId ? `
+                .app-window:not([data-app="${peekingWindowId}"]) {
+                opacity: 0 !important;
+                pointer-events: none !important;
+                }
+                ` : ''}
+                `}
+            </style>
+            
             <div className="desktop-icons" ref={iconsContainerRef}>
                 {icons.map((icon) => (
                     <DesktopIcon
@@ -340,6 +361,7 @@ function Desktop({
                         iconSrc={icon.iconSrc}
                         x={icon.x}
                         y={icon.y}
+                        isShortcut={icon.isShortcut}
                         isSelected={selectedIconIds.includes(icon.id)}
                         onSelect={(id) => {
                             if (!selectedIconIds.includes(id)) {
@@ -359,6 +381,8 @@ function Desktop({
             {openWindows.map((win) => {
 
                 if (!win || !win.id) return null;
+                
+                const isHiddenByPeek = peekingWindowId !== null && peekingWindowId !== win.id;
 
                 const isPortfolio = win.id === 'portfolio_app';
 
@@ -371,7 +395,12 @@ function Desktop({
                 return (
                     <Window
                         key={win.id}
-                        style={{ zIndex: win.zIndex}}
+                        style={{
+                            zIndex: win.zIndex, 
+                            opacity: isHiddenByPeek ? 0 : 1,
+                            pointerEvents: isHiddenByPeek ? 'none' : 'auto',
+                            transition: 'opacity 0.2s ease-in-out'
+                        }}
                         window={win}
                         title={win.title}
                         iconSrc={win.iconSrc || icons.find(i => i.id === win.id)?.iconSrc}

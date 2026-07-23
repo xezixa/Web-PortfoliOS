@@ -1,8 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
 import './Taskbar.css';
 import GalleryExplorer from '../../apps/GalleryExplorer/GalleryExplorer';
+import PortfolioAppContent from "../../apps/PortfolioApp/PortfolioAppContent.jsx";
+import ResumeView from "../../apps/PortfolioApp/ResumeView.jsx";
+import DeviceMgr from "../../apps/DeviceMgr/DeviceMgr.jsx";
+import SysProp from "../../apps/SysProp/SysProp.jsx";
 
-function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize, focusedWindowId, onToggleStartMenu, onReorderWindows }) {
+function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize, focusedWindowId, onToggleStartMenu, onReorderWindows, onPeek }) {
 
     const [time, setTime] = useState('');
     const [hoveredWindowId, setHoveredWindowId] = useState(null);
@@ -13,6 +17,8 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
     const originalIndex = useRef(0);
     const itemWidth = useRef(100);
     const dragDelta = useRef(0);
+    const peekTimerRef = useRef(null);
+    const leaveTimerRef = useRef(null);
     
     const [isTrayExpanded, setIsTrayExpanded] = useState(true);
 
@@ -32,19 +38,41 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
         return () => clearInterval(timerId);
     }, []);
 
-    const handleMouseEnter = (id) => {
+    const handleButtonMouseEnter = (id) => {
+        if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+
         hoverTimerRef.current = setTimeout(() => {
             setHoveredWindowId(id);
-        }, 600);
+        }, 500);
+    };
+
+    const handlePreviewMouseEnter = (id) => {
+        if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+
+        peekTimerRef.current = setTimeout(() => {
+            if (onPeek) onPeek(id);
+        }, 400);
     };
 
     const handleMouseLeave = () => {
-        if (hoverTimerRef.current) {
-            clearTimeout(hoverTimerRef.current);
-        }
-        setHoveredWindowId(null);
+        if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+        if (peekTimerRef.current) clearTimeout(peekTimerRef.current);
+
+        leaveTimerRef.current = setTimeout(() => {
+            setHoveredWindowId(null);
+            if (onPeek) onPeek(null);
+        }, 300);
     };
 
+    const forceClosePreview = () => {
+        if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+        if (peekTimerRef.current) clearTimeout(peekTimerRef.current);
+        if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+        
+        setHoveredWindowId(null);
+        if (onPeek) onPeek(null);
+    };
+    
     return (
         <div className="taskbar">
             <div
@@ -104,7 +132,7 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                                 transition: isSibling ? 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none',
                                 pointerEvents: draggedTaskId && !isDragged ? 'none' : 'auto'
                             }}
-                            onMouseEnter={() => handleMouseEnter(win.id)}
+                            onMouseEnter={() => handleButtonMouseEnter(win.id)}
                             onMouseLeave={handleMouseLeave}
                             onPointerDown={(e) => {
                                 if (e.button !== 0) return;
@@ -134,6 +162,7 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                                     if (isMinimized) onRestore(win.id);
                                     else if (isActive) onMinimize(win.id);
                                     else onFocus(win.id);
+                                    forceClosePreview();
                                 }
                                 else {
                                     const currentShift = Math.round(dragX / itemWidth.current);
@@ -160,7 +189,13 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                             </button>
 
                             {hoveredWindowId === win.id && (
-                                <div className="window-preview-container">
+                                <div
+                                    className="window-preview-container"
+                                    onMouseEnter={() => handlePreviewMouseEnter(win.id)}
+                                    
+                                    onMouseLeave={handleMouseLeave}
+                                    style={{ pointerEvents: 'auto' }}
+                                >
                                     <div className="window-preview-header">
                                         {win.iconSrc && <img src={win.iconSrc} alt="" style={{ width: '12px', height: '12px', marginRight: '5px' }}/>}
                                         <span>{win.title}</span>
@@ -186,8 +221,16 @@ function Taskbar({ minimizedWindows, onFocus, openWindows, onRestore, onMinimize
                                                 pointerEvents: 'none'
                                             }}
                                         >
-                                            {win.id === 'gallery_app' ? (
+                                            {win.id === 'portfolio_app' ? (
+                                                <PortfolioAppContent onOpenWindow={() => {}} />
+                                            ) : win.id === 'resume-app' ? (
+                                                <ResumeView onClose={() => {}} />
+                                            ) : win.id === 'gallery_app' ? (
                                                 <GalleryExplorer onOpenWindow={() => {}} />
+                                            ) : win.id === 'technology_app' ? (
+                                                <DeviceMgr onOpenWindow={() => {}} onCloseWindow={() => {}} />
+                                            ) : win.id === 'sysprop_app' ? (
+                                                <SysProp onClose={() => {}} />
                                             ) : (
                                                 win.content
                                             )}

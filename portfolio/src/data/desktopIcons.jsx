@@ -20,12 +20,14 @@ export const initialIcons = [
     },
     {
         id: 'resume-app',
-        label: 'PDFView.exe',
+        label: 'PDF Viewer',
+        isShortcut: true,
         iconSrc: '/Notepad_WinXP.png'
     },
     {
         id: 'portfolio_app',
-        label: 'portfolio_bezilla.exe',
+        label: 'My Portfolio',
+        isShortcut: true,
         iconSrc: '/portfolio-app-icon.png',
         content: <PortfolioAppContent />
     }

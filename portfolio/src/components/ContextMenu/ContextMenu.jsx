@@ -34,7 +34,7 @@ export default function ContextMenu({ x, y, items, visible, onClose }) {
                         }}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (!item.disabled) return;
+                            if (item.disabled) return;
                             
                             if (hasSubmenu) return;
                             
